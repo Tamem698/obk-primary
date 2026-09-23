@@ -1,0 +1,1060 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>بوابة تسجيل دروس التقوية - مدرسة عمر بن الخطاب الابتدائية للبنين</title>
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  
+  <!-- Official Ministry Fonts (Tajawal & Almarai) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Almarai:wght@300;400;700;800&family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet">
+  
+  <style>
+    body {
+      font-family: 'Tajawal', 'Almarai', sans-serif;
+      background-color: #f8fafc;
+      color: #1e293b;
+    }
+    
+    /* Official Qatar Maroon Palette */
+    :root {
+      --qatar-maroon: #8A1538;
+      --qatar-maroon-hover: #700f2c;
+      --qatar-maroon-light: #fdf2f4;
+      --qatar-maroon-border: #f1b8c4;
+    }
+
+    .bg-maroon { background-color: var(--qatar-maroon); }
+    .text-maroon { color: var(--qatar-maroon); }
+    .border-maroon { border-color: var(--qatar-maroon); }
+    .hover-bg-maroon:hover { background-color: var(--qatar-maroon-hover); }
+
+    /* Custom Form Step Transitions */
+    .form-step {
+      display: none;
+      animation: fadeIn 0.35s ease-in-out forwards;
+    }
+    .form-step.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Step Bullet Styles */
+    .step-bullet {
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .step-bullet.current {
+      background-color: var(--qatar-maroon);
+      border-color: var(--qatar-maroon);
+      color: #ffffff;
+      box-shadow: 0 0 0 4px rgba(138, 21, 56, 0.2);
+    }
+    .step-bullet.completed {
+      background-color: var(--qatar-maroon);
+      border-color: var(--qatar-maroon);
+      color: #ffffff;
+    }
+
+    /* Subject Selection Card Styles */
+    .subject-card {
+      transition: all 0.2s ease-in-out;
+      cursor: pointer;
+      user-select: none;
+    }
+    .subject-card:hover {
+      border-color: var(--qatar-maroon);
+      transform: translateY(-2px);
+    }
+    .subject-card.selected {
+      border-color: var(--qatar-maroon);
+      background-color: var(--qatar-maroon-light);
+      box-shadow: 0 4px 12px rgba(138, 21, 56, 0.08);
+    }
+    .subject-card.disabled {
+      opacity: 0.55;
+      cursor: not-allowed;
+      transform: none !important;
+    }
+
+    /* Print Styles */
+    @media print {
+      body { background: white !important; }
+      .no-print { display: none !important; }
+      .print-only { display: block !important; }
+      .print-shadow-none { box-shadow: none !important; border: 1px solid #cbd5e1 !important; }
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col bg-slate-50 antialiased selection:bg-[#8A1538] selection:text-white">
+
+  <!-- Top Official Header -->
+  <header class="bg-white border-b-4 border-[#8A1538] shadow-sm sticky top-0 z-40">
+    <div class="max-w-4xl mx-auto px-4 py-3 sm:py-4 flex items-center justify-between">
+      
+      <!-- School Identity & Emblem -->
+      <div class="flex items-center gap-3">
+        <div class="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-[#8A1538] text-white flex items-center justify-center text-xl sm:text-2xl shadow-md border-2 border-white ring-2 ring-[#8A1538]/20">
+          <i class="fa-solid fa-graduation-cap"></i>
+        </div>
+        <div>
+          <span class="text-[11px] sm:text-xs font-bold text-slate-500 block leading-tight">دولة قطر • وزارة التربية والتعليم والتعليم العالي</span>
+          <h1 class="text-base sm:text-xl font-black text-[#8A1538] leading-tight">مدرسة عمر بن الخطاب الابتدائية للبنين</h1>
+          <p class="text-[11px] sm:text-xs font-medium text-slate-600 mt-0.5">بوابة التسجيل للدروس الإثرائية وعلاج الضعف الأكاديمي</p>
+        </div>
+      </div>
+
+      <!-- Coordinator Direct Contact Badge (Replaces Admin Panel) -->
+      <div class="no-print flex flex-col items-end">
+        <span class="text-[10px] text-slate-500 font-bold block mb-1">مسؤول دروس التقوية</span>
+        <a 
+          href="https://wa.me/97431098549" 
+          target="_blank" 
+          class="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl text-xs font-bold text-emerald-800 bg-emerald-50 hover:bg-emerald-600 hover:text-white border border-emerald-300 transition-all duration-200 shadow-sm"
+          title="التواصل المباشر مع الأستاذ تميم الدوسري"
+        >
+          <i class="fa-brands fa-whatsapp text-emerald-600 text-sm"></i>
+          <span>أ. تميم الدوسري: 31098549</span>
+        </a>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- Main Content Container -->
+  <main class="flex-grow max-w-4xl w-full mx-auto px-4 py-6 sm:py-8">
+
+    <!-- Open Registration Announcement Banner -->
+    <div id="openNoticeBanner" class="mb-6 p-4 rounded-2xl bg-emerald-50 border-2 border-emerald-300 text-slate-800 shadow-sm flex items-start gap-3">
+      <div class="w-8 h-8 rounded-xl bg-emerald-600 text-white flex items-center justify-center shrink-0 text-sm mt-0.5">
+        <i class="fa-solid fa-door-open"></i>
+      </div>
+      <div class="text-xs sm:text-sm">
+        <div class="flex items-center gap-2 flex-wrap mb-1">
+          <span class="font-black text-emerald-900 text-sm">التسجيل متاح ومفتوح حالياً لجميع الطلاب</span>
+          <span class="px-2 py-0.5 rounded-full bg-emerald-600 text-white font-bold text-[11px]">مفتوح الآن</span>
+        </div>
+        <p class="text-slate-600 leading-relaxed">
+          يرجى من السادة أولياء الأمور المبادرة بتسجيل أبنائهم في المواد الإثرائية المطلوبة، علماً بأن باب استقبال الطلبات <strong>سيُغلق يوم الإثنين</strong> لحصر القوائم وتوزيع الشعب الدراسية.
+        </p>
+      </div>
+    </div>
+
+    <!-- Multi-Step Form Container -->
+    <div id="formContainer" class="bg-white rounded-3xl shadow-xl shadow-slate-200/60 border border-slate-200 overflow-hidden">
+      
+      <!-- Wizard Progress Header -->
+      <div class="bg-slate-50 border-b border-slate-200 p-4 sm:p-6 no-print">
+        
+        <!-- Step Indicators -->
+        <div class="flex items-center justify-between max-w-md mx-auto relative mb-4">
+          <div class="absolute top-1/2 left-4 right-4 h-0.5 bg-slate-200 -translate-y-1/2 z-0"></div>
+          
+          <div class="flex flex-col items-center relative z-10">
+            <div id="bullet-1" class="step-bullet w-8 h-8 rounded-full border-2 border-[#8A1538] bg-[#8A1538] text-white font-bold flex items-center justify-center text-xs current">1</div>
+            <span class="text-[11px] font-bold mt-1 text-slate-700 hidden sm:block">الطالب</span>
+          </div>
+
+          <div class="flex flex-col items-center relative z-10">
+            <div id="bullet-2" class="step-bullet w-8 h-8 rounded-full border-2 border-slate-300 bg-white text-slate-500 font-bold flex items-center justify-center text-xs">2</div>
+            <span class="text-[11px] font-bold mt-1 text-slate-700 hidden sm:block">ولي الأمر</span>
+          </div>
+
+          <div class="flex flex-col items-center relative z-10">
+            <div id="bullet-3" class="step-bullet w-8 h-8 rounded-full border-2 border-slate-300 bg-white text-slate-500 font-bold flex items-center justify-center text-xs">3</div>
+            <span class="text-[11px] font-bold mt-1 text-slate-700 hidden sm:block">المواد (3)</span>
+          </div>
+
+          <div class="flex flex-col items-center relative z-10">
+            <div id="bullet-4" class="step-bullet w-8 h-8 rounded-full border-2 border-slate-300 bg-white text-slate-500 font-bold flex items-center justify-center text-xs">4</div>
+            <span class="text-[11px] font-bold mt-1 text-slate-700 hidden sm:block">التأكيد</span>
+          </div>
+        </div>
+
+        <!-- Progress Percentage Bar -->
+        <div class="w-full bg-slate-200 rounded-full h-1.5 overflow-hidden">
+          <div id="wizardProgressBar" class="bg-[#8A1538] h-full transition-all duration-300 ease-out" style="width: 25%;"></div>
+        </div>
+
+        <div class="flex justify-between items-center mt-2.5 text-xs text-slate-500 font-bold">
+          <span id="stepTitleDisplay" class="text-[#8A1538]">الخطوة 1: بيانات الطالب الأساسية</span>
+          <span id="stepCounterText">الخطوة 1 من 4</span>
+        </div>
+      </div>
+
+      <!-- Form Body -->
+      <form id="tutoringForm" onsubmit="return false;" class="p-5 sm:p-8 space-y-6">
+
+        <!-- STEP 1: Student Information -->
+        <div id="step-1" class="form-step active space-y-5">
+          <div class="border-b border-slate-100 pb-3">
+            <h3 class="text-base sm:text-lg font-black text-slate-900 flex items-center gap-2">
+              <i class="fa-solid fa-user-graduate text-[#8A1538]"></i>
+              <span>بيانات الطالب الأساسية</span>
+            </h3>
+            <p class="text-xs text-slate-500 mt-1">يرجى كتابة الاسم الرباعي والرقم الشخصي كما هو مدون في البطاقة الشخصية القطرية</p>
+          </div>
+
+          <div class="space-y-4">
+            <div>
+              <label class="block font-bold text-slate-800 text-xs sm:text-sm mb-1.5" for="studentName">
+                اسم الطالب بالكامل (رباعي) <span class="text-[#8A1538]">*</span>
+              </label>
+              <input 
+                type="text" 
+                id="studentName" 
+                required 
+                placeholder="مثال: محمد جاسم حمد آل ثاني" 
+                class="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-[#8A1538] focus:border-transparent text-sm"
+              >
+              <span id="err_studentName" class="text-[11px] text-rose-600 font-bold hidden mt-1 block">يرجى إدخال الاسم الرباعي للطالب بشكل صحيح</span>
+            </div>
+
+            <div>
+              <label class="block font-bold text-slate-800 text-xs sm:text-sm mb-1.5" for="studentQid">
+                الرقم الشخصي للطالب (QID) - 11 رقماً <span class="text-[#8A1538]">*</span>
+              </label>
+              <input 
+                type="tel" 
+                id="studentQid" 
+                maxlength="11" 
+                required 
+                placeholder="مثال: 31563400000" 
+                class="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-[#8A1538] focus:border-transparent text-sm font-mono text-left"
+              >
+              <span id="err_studentQid" class="text-[11px] text-rose-600 font-bold hidden mt-1 block">يجب إدخال 11 رقماً بدقة كما في بطاقة الإقامة / الهوية</span>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label class="block font-bold text-slate-800 text-xs sm:text-sm mb-1.5" for="studentGrade">
+                  المستوى الدراسي (الصف) <span class="text-[#8A1538]">*</span>
+                </label>
+                <select 
+                  id="studentGrade" 
+                  required 
+                  class="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-[#8A1538] focus:border-transparent text-sm bg-white"
+                >
+                  <option value="" disabled selected>اختر الصف الدراسي...</option>
+                  <option value="الصف الأول الابتدائي">الصف الأول الابتدائي</option>
+                  <option value="الصف الثاني الابتدائي">الصف الثاني الابتدائي</option>
+                  <option value="الصف الثالث الابتدائي">الصف الثالث الابتدائي</option>
+                  <option value="الصف الرابع الابتدائي">الصف الرابع الابتدائي</option>
+                  <option value="الصف الخامس الابتدائي">الصف الخامس الابتدائي</option>
+                  <option value="الصف السادس الابتدائي">الصف السادس الابتدائي</option>
+                </select>
+                <span id="err_studentGrade" class="text-[11px] text-rose-600 font-bold hidden mt-1 block">يرجى تحديد الصف الدراسي</span>
+              </div>
+
+              <div>
+                <label class="block font-bold text-slate-800 text-xs sm:text-sm mb-1.5" for="studentSection">
+                  رقم الشعبة <span class="text-[#8A1538]">*</span>
+                </label>
+                <select 
+                  id="studentSection" 
+                  required 
+                  class="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-[#8A1538] focus:border-transparent text-sm bg-white"
+                >
+                  <option value="" disabled selected>اختر الشعبة...</option>
+                  <option value="1">شعبة (1)</option>
+                  <option value="2">شعبة (2)</option>
+                  <option value="3">شعبة (3)</option>
+                  <option value="4">شعبة (4)</option>
+                  <option value="5">شعبة (5)</option>
+                  <option value="6">شعبة (6)</option>
+                </select>
+                <span id="err_studentSection" class="text-[11px] text-rose-600 font-bold hidden mt-1 block">يرجى اختيار الشعبة</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- STEP 2: Guardian Contact Information -->
+        <div id="step-2" class="form-step space-y-5">
+          <div class="border-b border-slate-100 pb-3">
+            <h3 class="text-base sm:text-lg font-black text-slate-900 flex items-center gap-2">
+              <i class="fa-solid fa-address-book text-[#8A1538]"></i>
+              <span>بيانات التواصل مع ولي الأمر</span>
+            </h3>
+            <p class="text-xs text-slate-500 mt-1">تُستخدم هذه الأرقام لإرسال مواعيد الدروس والتقارير عبر الرسائل النصية والواتساب</p>
+          </div>
+
+          <div class="space-y-4">
+            <div>
+              <label class="block font-bold text-slate-800 text-xs sm:text-sm mb-1.5" for="guardianName">
+                اسم ولي الأمر <span class="text-[#8A1538]">*</span>
+              </label>
+              <input 
+                type="text" 
+                id="guardianName" 
+                required 
+                placeholder="اسم الأب أو الأم أو الوصي" 
+                class="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-[#8A1538] focus:border-transparent text-sm"
+              >
+              <span id="err_guardianName" class="text-[11px] text-rose-600 font-bold hidden mt-1 block">يرجى كتابة اسم ولي الأمر</span>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label class="block font-bold text-slate-800 text-xs sm:text-sm mb-1.5" for="guardianRelation">
+                  صلة القرابة <span class="text-[#8A1538]">*</span>
+                </label>
+                <select 
+                  id="guardianRelation" 
+                  class="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-[#8A1538] focus:border-transparent text-sm bg-white"
+                >
+                  <option value="الأب" selected>الأب</option>
+                  <option value="الأم">الأم</option>
+                  <option value="الأخ الأكبر">الأخ الأكبر</option>
+                  <option value="الوصي الشرعي">الوصي الشرعي</option>
+                </select>
+              </div>
+
+              <div>
+                <label class="block font-bold text-slate-800 text-xs sm:text-sm mb-1.5" for="guardianPhone">
+                  رقم الهاتف الجوال الرئيسي (قطري) <span class="text-[#8A1538]">*</span>
+                </label>
+                <input 
+                  type="tel" 
+                  id="guardianPhone" 
+                  maxlength="8" 
+                  required 
+                  placeholder="مثال: 55123456" 
+                  class="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-[#8A1538] focus:border-transparent text-sm font-mono text-left"
+                >
+                <span id="err_guardianPhone" class="text-[11px] text-rose-600 font-bold hidden mt-1 block">يجب إدخال رقم جوال قطري صحيح مكون من 8 أرقام</span>
+              </div>
+            </div>
+
+            <div>
+              <label class="block font-bold text-slate-800 text-xs sm:text-sm mb-1.5" for="guardianPhone2">
+                رقم هاتف إضافي للطوارئ (اختياري)
+              </label>
+              <input 
+                type="tel" 
+                id="guardianPhone2" 
+                placeholder="رقم آخر للتواصل في حال تعذر الوصول للأول" 
+                class="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-[#8A1538] focus:border-transparent text-sm font-mono text-left"
+              >
+            </div>
+          </div>
+        </div>
+
+        <!-- STEP 3: Subject Selection (Strictly 3 subjects, No IT or Islamic Ed) -->
+        <div id="step-3" class="form-step space-y-5">
+          <div class="border-b border-slate-100 pb-3 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+            <div>
+              <h3 class="text-base sm:text-lg font-black text-slate-900 flex items-center gap-2">
+                <i class="fa-solid fa-book-open-reader text-[#8A1538]"></i>
+                <span>اختيار المواد الدراسية المطلوبة للتقوية</span>
+              </h3>
+              <p class="text-xs text-slate-500 mt-1">يجب اختيار <strong>3 مواد دراسية فقط</strong> حسب الشروط المعتمدة</p>
+            </div>
+
+            <!-- Real-time Selected Counter Badge -->
+            <div id="subjectCounterBadge" class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-bold bg-[#fdf2f4] text-[#8A1538] border border-[#f1b8c4]">
+              <i class="fa-solid fa-list-check"></i>
+              <span>المواد المختارة: <strong id="selectedCountText" class="text-sm">0</strong> من 3</span>
+            </div>
+          </div>
+
+          <!-- Important Note about Excluded Subjects -->
+          <div class="p-3 bg-amber-50 border border-amber-200 rounded-xl text-xs text-amber-900 flex items-center gap-2">
+            <i class="fa-solid fa-circle-exclamation text-amber-600 text-sm shrink-0"></i>
+            <span><strong>ملاحظة هامة:</strong> بناءً على توجيهات إدارة المدرسة، تقتصر دروس التقوية على المواد الأساسية أدناه (لا توجد دروس لمادتي الحاسوب والتربية الإسلامية).</span>
+          </div>
+
+          <!-- Error Alert for Subject Count -->
+          <div id="subjectAlert" class="hidden p-3 bg-rose-50 border border-rose-200 rounded-xl text-xs text-rose-700 font-bold flex items-center gap-2">
+            <i class="fa-solid fa-triangle-exclamation text-rose-600 text-sm"></i>
+            <span id="subjectAlertText">المطلوب تحديد 3 مواد دراسية بالضبط.</span>
+          </div>
+
+          <!-- Subject Selection Grid (5 core subjects only) -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5 pt-1">
+            
+            <!-- Subject 1: Arabic -->
+            <div class="subject-card p-4 rounded-2xl border-2 border-slate-200 bg-white flex items-center justify-between" data-subject="اللغة العربية">
+              <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-[#fdf2f4] text-[#8A1538] flex items-center justify-center text-lg">
+                  <i class="fa-solid fa-book-bookmark"></i>
+                </div>
+                <div>
+                  <h4 class="font-bold text-slate-900 text-sm">اللغة العربية</h4>
+                  <p class="text-[11px] text-slate-500">القراءة، الكتابة، الإملاء، والقواعد النحوية</p>
+                </div>
+              </div>
+              <input type="checkbox" name="subjects" value="اللغة العربية" class="w-5 h-5 accent-[#8A1538] pointer-events-none rounded">
+            </div>
+
+            <!-- Subject 2: Mathematics -->
+            <div class="subject-card p-4 rounded-2xl border-2 border-slate-200 bg-white flex items-center justify-between" data-subject="الرياضيات">
+              <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-[#fdf2f4] text-[#8A1538] flex items-center justify-center text-lg">
+                  <i class="fa-solid fa-calculator"></i>
+                </div>
+                <div>
+                  <h4 class="font-bold text-slate-900 text-sm">الرياضيات</h4>
+                  <p class="text-[11px] text-slate-500">العمليات الحسابية، المسائل اللفظية، والهندسة</p>
+                </div>
+              </div>
+              <input type="checkbox" name="subjects" value="الرياضيات" class="w-5 h-5 accent-[#8A1538] pointer-events-none rounded">
+            </div>
+
+            <!-- Subject 3: General Science -->
+            <div class="subject-card p-4 rounded-2xl border-2 border-slate-200 bg-white flex items-center justify-between" data-subject="العلوم العامة">
+              <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-[#fdf2f4] text-[#8A1538] flex items-center justify-center text-lg">
+                  <i class="fa-solid fa-flask"></i>
+                </div>
+                <div>
+                  <h4 class="font-bold text-slate-900 text-sm">العلوم العامة</h4>
+                  <p class="text-[11px] text-slate-500">المفاهيم العلمية، التجارب، ومهارات الاستقصاء</p>
+                </div>
+              </div>
+              <input type="checkbox" name="subjects" value="العلوم العامة" class="w-5 h-5 accent-[#8A1538] pointer-events-none rounded">
+            </div>
+
+            <!-- Subject 4: English Language -->
+            <div class="subject-card p-4 rounded-2xl border-2 border-slate-200 bg-white flex items-center justify-between" data-subject="اللغة الإنجليزية">
+              <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-[#fdf2f4] text-[#8A1538] flex items-center justify-center text-lg">
+                  <i class="fa-solid fa-language"></i>
+                </div>
+                <div>
+                  <h4 class="font-bold text-slate-900 text-sm">اللغة الإنجليزية (English)</h4>
+                  <p class="text-[11px] text-slate-500">Phonics, Reading, Writing & Grammar</p>
+                </div>
+              </div>
+              <input type="checkbox" name="subjects" value="اللغة الإنجليزية" class="w-5 h-5 accent-[#8A1538] pointer-events-none rounded">
+            </div>
+
+            <!-- Subject 5: Social Studies -->
+            <div class="subject-card p-4 rounded-2xl border-2 border-slate-200 bg-white flex items-center justify-between sm:col-span-2" data-subject="الدراسات الاجتماعية">
+              <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-[#fdf2f4] text-[#8A1538] flex items-center justify-center text-lg">
+                  <i class="fa-solid fa-earth-americas"></i>
+                </div>
+                <div>
+                  <h4 class="font-bold text-slate-900 text-sm">الدراسات الاجتماعية والتربية الوطنية</h4>
+                  <p class="text-[11px] text-slate-500">تاريخ قطر وجغرافيتها، المفاهيم الوطنية والمواطنة</p>
+                </div>
+              </div>
+              <input type="checkbox" name="subjects" value="الدراسات الاجتماعية" class="w-5 h-5 accent-[#8A1538] pointer-events-none rounded">
+            </div>
+
+          </div>
+        </div>
+
+        <!-- STEP 4: Preferences, Notes & Official Pledge -->
+        <div id="step-4" class="form-step space-y-5">
+          <div class="border-b border-slate-100 pb-3">
+            <h3 class="text-base sm:text-lg font-black text-slate-900 flex items-center gap-2">
+              <i class="fa-solid fa-clock-rotate-left text-[#8A1538]"></i>
+              <span>الفترة المفضلة والتعهد والإرسال</span>
+            </h3>
+            <p class="text-xs text-slate-500 mt-1">المرحلة الأخيرة لتأكيد استمارة تسجيل الطالب واعتمادها</p>
+          </div>
+
+          <div class="space-y-4">
+            <div>
+              <label class="block font-bold text-slate-800 text-xs sm:text-sm mb-2">
+                الفترة الزمنية المفضلة لحضور الحصص الإثرائية: <span class="text-[#8A1538]">*</span>
+              </label>
+              
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <label class="flex items-center gap-3 p-3.5 rounded-2xl border-2 border-slate-200 hover:border-[#8A1538] cursor-pointer transition">
+                  <input type="radio" name="preferredTime" value="الفترة الصباحية (قبل بدء الدوام)" checked class="w-4 h-4 accent-[#8A1538]">
+                  <div class="text-xs">
+                    <span class="font-bold text-slate-900 block">الفترة الصباحية</span>
+                    <span class="text-slate-500">من 6:30 صباحاً إلى 7:00 صباحاً</span>
+                  </div>
+                </label>
+
+                <label class="flex items-center gap-3 p-3.5 rounded-2xl border-2 border-slate-200 hover:border-[#8A1538] cursor-pointer transition">
+                  <input type="radio" name="preferredTime" value="بعد انتهاء الدوام المدرسي" class="w-4 h-4 accent-[#8A1538]">
+                  <div class="text-xs">
+                    <span class="font-bold text-slate-900 block">بعد انتهاء الدوام المدرسي</span>
+                    <span class="text-slate-500">من 1:45 ظهراً إلى 2:45 ظهراً</span>
+                  </div>
+                </label>
+              </div>
+            </div>
+
+            <div>
+              <label class="block font-bold text-slate-800 text-xs sm:text-sm mb-1.5" for="transportType">
+                وسيلة انصراف الطالب بعد الحصص
+              </label>
+              <select 
+                id="transportType" 
+                class="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-[#8A1538] focus:border-transparent text-sm bg-white"
+              >
+                <option value="استلام ولي الأمر شخصياً" selected>استلام ولي الأمر شخصياً من بوابة المدرسة</option>
+                <option value="باص المدرسة (إذا كان متاحاً في الفترة)">باص المدرسة (إن توفر في توقيت المجموعة)</option>
+                <option value="سائق خاص">سائق خاص مفوض من ولي الأمر</option>
+              </select>
+            </div>
+
+            <div>
+              <label class="block font-bold text-slate-800 text-xs sm:text-sm mb-1.5" for="studentNotes">
+                ملاحظات أو نقاط ضعف محددة ترغب في أن يركز عليها المعلم (اختياري)
+              </label>
+              <textarea 
+                id="studentNotes" 
+                rows="2" 
+                placeholder="مثال: بحاجة إلى تقوية في جدول الضرب أو حفظ الحروف الهجائية وقواعد الإملاء..." 
+                class="w-full px-4 py-2 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-[#8A1538] focus:border-transparent text-xs sm:text-sm"
+              ></textarea>
+            </div>
+
+            <!-- Official School Pledge -->
+            <div class="p-4 bg-[#fdf2f4] rounded-2xl border border-[#f1b8c4] space-y-2">
+              <label class="flex items-start gap-2.5 cursor-pointer">
+                <input type="checkbox" id="pledgeAgreement" required class="w-4 h-4 mt-1 accent-[#8A1538] rounded">
+                <span class="text-xs font-bold text-slate-800 leading-relaxed">
+                  أتعهد أنا ولي أمر الطالب بمتابعة حضور ابني لدروس التقوية في المواعيد المحددة وعدم الغياب والالتزام بالزي المدرسي واللوائح السلوكية لمدرسة عمر بن الخطاب الابتدائية للبنين. <span class="text-[#8A1538]">*</span>
+                </span>
+              </label>
+              <span id="err_pledge" class="text-[11px] text-rose-600 font-bold hidden block">يرجى الموافقة والتعهد لإتمام عملية الإرسال</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Wizard Navigation Buttons (Prev / Next / Submit) -->
+        <div class="flex items-center justify-between pt-4 border-t border-slate-200 no-print gap-3">
+          
+          <div>
+            <button 
+              type="button" 
+              id="prevBtn" 
+              onclick="prevStep()" 
+              class="hidden px-5 py-2.5 rounded-xl border border-slate-300 hover:bg-slate-100 text-slate-700 font-bold text-xs sm:text-sm transition flex items-center gap-2"
+            >
+              <i class="fa-solid fa-arrow-right"></i>
+              <span>السابق</span>
+            </button>
+          </div>
+
+          <div class="flex items-center gap-2">
+            <button 
+              type="button" 
+              onclick="resetAllFields()" 
+              class="px-3 py-2.5 rounded-xl text-slate-400 hover:text-rose-600 text-xs font-bold transition"
+              title="إعادة ضبط وتفريغ الاستمارة"
+            >
+              <i class="fa-solid fa-rotate-right"></i>
+            </button>
+
+            <button 
+              type="button" 
+              id="nextBtn" 
+              onclick="nextStep()" 
+              class="px-6 py-2.5 rounded-xl bg-[#8A1538] hover:bg-[#700f2c] text-white font-bold text-xs sm:text-sm transition flex items-center gap-2 shadow-md shadow-[#8A1538]/20"
+            >
+              <span>التالي</span>
+              <i class="fa-solid fa-arrow-left"></i>
+            </button>
+
+            <button 
+              type="button" 
+              id="submitBtn" 
+              onclick="handleFormSubmit()" 
+              class="hidden px-7 py-2.5 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white font-black text-xs sm:text-sm transition flex items-center gap-2 shadow-lg shadow-emerald-700/25"
+            >
+              <i class="fa-brands fa-whatsapp text-base"></i>
+              <span>إرسال الاستمارة عبر الواتساب</span>
+            </button>
+          </div>
+
+        </div>
+
+      </form>
+    </div>
+
+    <!-- Successful Submission Receipt Card (Hidden by Default) -->
+    <div id="receiptSection" class="hidden bg-white rounded-3xl shadow-xl shadow-slate-200/60 border border-slate-200 p-6 sm:p-8 text-center space-y-6">
+      <div class="w-16 h-16 rounded-3xl bg-emerald-100 text-emerald-700 flex items-center justify-center text-3xl mx-auto shadow-sm">
+        <i class="fa-solid fa-circle-check"></i>
+      </div>
+
+      <div class="space-y-1">
+        <h2 class="text-xl sm:text-2xl font-black text-slate-900">تم تجهيز استمارة التسجيل بنجاح!</h2>
+        <p class="text-xs sm:text-sm text-slate-500">تم إعداد بيانات الطالب، يُرجى إرسالها الآن مباشرة إلى مسؤول التقوية بالمدرسة</p>
+      </div>
+
+      <!-- Coordinator Instant Dispatch Notice Box -->
+      <div class="p-5 bg-emerald-50 border-2 border-emerald-400 rounded-2xl max-w-lg mx-auto text-center shadow-md">
+        <div class="flex items-center justify-center gap-2 text-emerald-950 font-black text-sm mb-1.5">
+          <i class="fa-brands fa-whatsapp text-emerald-600 text-2xl"></i>
+          <span>إرسال فوري لمسؤول التقوية: أ. تميم الدوسري</span>
+        </div>
+        <p class="text-xs text-slate-700 mb-4 leading-relaxed font-semibold">
+          اضغط على الزر الأخضر أدناه لفتح تطبيق الواتساب وإرسال كامل تفاصيل تسجيل الطالب مباشرة إلى جوال الأستاذ <strong>تميم الدوسري (31098549)</strong> لاعتماد قيد الطالب في الشعبة.
+        </p>
+        <a 
+          id="recWhatsappBtn" 
+          href="#" 
+          target="_blank" 
+          class="inline-flex items-center justify-center gap-2.5 px-6 py-3.5 bg-[#25D366] hover:bg-[#1faa53] text-white font-black text-sm sm:text-base rounded-2xl shadow-lg shadow-emerald-600/30 transition transform hover:scale-[1.02] active:scale-95 w-full"
+        >
+          <i class="fa-brands fa-whatsapp text-xl"></i>
+          <span>إرسال الاستمارة لواتساب أ. تميم الدوسري (31098549)</span>
+        </a>
+      </div>
+
+      <!-- Receipt Box (Maroon & White) -->
+      <div class="bg-[#fafafa] border border-slate-200 rounded-2xl p-6 text-right max-w-lg mx-auto text-sm space-y-3.5 print-shadow-none">
+        <div class="flex justify-between items-center border-b border-slate-200 pb-3">
+          <span class="text-slate-500 font-bold">رقم مرجع التسجيل:</span>
+          <span id="recCode" class="font-mono font-black text-[#8A1538] bg-[#fdf2f4] px-2.5 py-0.5 rounded-md border border-[#f1b8c4]">OBK-2026-0000</span>
+        </div>
+
+        <div class="flex justify-between items-center">
+          <span class="text-slate-500 font-medium">اسم الطالب:</span>
+          <span id="recName" class="font-bold text-slate-900">-</span>
+        </div>
+
+        <div class="flex justify-between items-center">
+          <span class="text-slate-500 font-medium">الرقم الشخصي (QID):</span>
+          <span id="recQid" class="font-mono font-bold text-slate-800">-</span>
+        </div>
+
+        <div class="flex justify-between items-center">
+          <span class="text-slate-500 font-medium">الصف والشعبة:</span>
+          <span id="recGradeSection" class="font-bold text-slate-900">-</span>
+        </div>
+
+        <div class="flex justify-between items-center">
+          <span class="text-slate-500 font-medium">ولي الأمر والهاتف:</span>
+          <span id="recGuardian" class="font-bold text-slate-800">-</span>
+        </div>
+
+        <div class="border-t border-slate-200 pt-3">
+          <span class="text-slate-500 block mb-2 font-bold">المواد الثلاث المعتمدة:</span>
+          <div id="recSubjectsList" class="flex flex-wrap gap-1.5"></div>
+        </div>
+
+        <div class="flex justify-between items-center border-t border-slate-200 pt-3 text-xs text-slate-500">
+          <span>تاريخ وتوقيت التقديم:</span>
+          <span id="recTimestamp" class="font-mono font-bold"></span>
+        </div>
+      </div>
+
+      <div class="flex flex-wrap items-center justify-center gap-3 mt-6 no-print">
+        <button 
+          onclick="window.print()" 
+          class="px-6 py-2.5 bg-[#8A1538] hover:bg-[#6a0f2b] text-white rounded-xl font-bold text-sm flex items-center gap-2 shadow-md transition"
+        >
+          <i class="fa-solid fa-print"></i>
+          <span>طباعة إشعار التسجيل</span>
+        </button>
+
+        <button 
+          onclick="submitNewForm()" 
+          class="px-6 py-2.5 bg-white border border-slate-300 hover:bg-slate-50 text-slate-800 rounded-xl font-bold text-sm flex items-center gap-2 transition"
+        >
+          <i class="fa-solid fa-user-plus text-[#8A1538]"></i>
+          <span>تسجيل طالب آخر</span>
+        </button>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Official Footer -->
+  <footer class="bg-white border-t border-slate-200 py-4 text-center text-xs text-slate-500 no-print">
+    <div class="max-w-4xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-2">
+      <p>جميع الحقوق محفوظة © مدرسة عمر بن الخطاب الابتدائية للبنين - دولة قطر</p>
+      <div class="flex items-center gap-1 font-bold text-[#8A1538]">
+        <i class="fa-solid fa-shield-halved"></i>
+        <span>بوابة التسجيل الإلكترونية المعتمدة</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Notification Toast Box -->
+  <div id="toastNotification" class="hidden fixed bottom-6 left-1/2 -translate-x-1/2 z-50 px-5 py-3 rounded-xl shadow-2xl text-white text-xs sm:text-sm font-bold flex items-center gap-2 transition-all"></div>
+
+  <script>
+    // State Variables
+    let selectedSubjects = [];
+    const MAX_SUBJECTS = 3;
+    let currentStep = 1;
+    const TOTAL_STEPS = 4;
+
+    // Coordinator Details (Tamim Al-Dosari - 31098549)
+    const COORDINATOR_NAME = "تميم الدوسري";
+    const COORDINATOR_PHONE = "97431098549"; // Qatari phone with 974 country code
+
+    const stepTitles = {
+      1: "الخطوة 1: بيانات الطالب الأساسية",
+      2: "الخطوة 2: بيانات التواصل مع ولي الأمر",
+      3: "الخطوة 3: اختيار المواد الدراسية (3 مواد فقط)",
+      4: "الخطوة 4: الفترة المفضلة والتعهد والإرسال"
+    };
+
+    function updateStepUI() {
+      for (let i = 1; i <= TOTAL_STEPS; i++) {
+        const stepEl = document.getElementById(`step-${i}`);
+        const bulletEl = document.getElementById(`bullet-${i}`);
+        
+        if (i === currentStep) {
+          stepEl.classList.add('active');
+          bulletEl.className = "step-bullet w-8 h-8 rounded-full border-2 border-[#8A1538] bg-[#8A1538] text-white font-bold flex items-center justify-center transition-all current text-xs";
+          bulletEl.textContent = i;
+        } else if (i < currentStep) {
+          stepEl.classList.remove('active');
+          bulletEl.className = "step-bullet w-8 h-8 rounded-full border-2 border-[#8A1538] bg-[#8A1538] text-white font-bold flex items-center justify-center transition-all completed text-xs";
+          bulletEl.innerHTML = `<i class="fa-solid fa-check text-xs"></i>`;
+        } else {
+          stepEl.classList.remove('active');
+          bulletEl.className = "step-bullet w-8 h-8 rounded-full border-2 border-slate-300 bg-white text-slate-500 font-bold flex items-center justify-center transition-all text-xs";
+          bulletEl.textContent = i;
+        }
+      }
+
+      document.getElementById('stepTitleDisplay').textContent = stepTitles[currentStep];
+      document.getElementById('stepCounterText').textContent = `الخطوة ${currentStep} من ${TOTAL_STEPS}`;
+      const progressPercent = (currentStep / TOTAL_STEPS) * 100;
+      document.getElementById('wizardProgressBar').style.width = `${progressPercent}%`;
+
+      const prevBtn = document.getElementById('prevBtn');
+      const nextBtn = document.getElementById('nextBtn');
+      const submitBtn = document.getElementById('submitBtn');
+
+      if (currentStep === 1) {
+        prevBtn.classList.add('hidden');
+      } else {
+        prevBtn.classList.remove('hidden');
+      }
+
+      if (currentStep === TOTAL_STEPS) {
+        nextBtn.classList.add('hidden');
+        submitBtn.classList.remove('hidden');
+      } else {
+        nextBtn.classList.remove('hidden');
+        submitBtn.classList.add('hidden');
+      }
+
+      window.scrollTo({ top: 80, behavior: 'smooth' });
+    }
+
+    function validateStep(step) {
+      let isValid = true;
+
+      if (step === 1) {
+        const name = document.getElementById('studentName').value.trim();
+        const errName = document.getElementById('err_studentName');
+        if (name.length < 5 || !name.includes(' ')) {
+          errName.classList.remove('hidden');
+          isValid = false;
+        } else {
+          errName.classList.add('hidden');
+        }
+
+        const qid = document.getElementById('studentQid').value.trim();
+        const errQid = document.getElementById('err_studentQid');
+        if (!/^\d{11}$/.test(qid)) {
+          errQid.classList.remove('hidden');
+          isValid = false;
+        } else {
+          errQid.classList.add('hidden');
+        }
+
+        const grade = document.getElementById('studentGrade').value;
+        const errGrade = document.getElementById('err_studentGrade');
+        if (!grade) {
+          errGrade.classList.remove('hidden');
+          isValid = false;
+        } else {
+          errGrade.classList.add('hidden');
+        }
+
+        const section = document.getElementById('studentSection').value;
+        const errSec = document.getElementById('err_studentSection');
+        if (!section) {
+          errSec.classList.remove('hidden');
+          isValid = false;
+        } else {
+          errSec.classList.add('hidden');
+        }
+      }
+
+      if (step === 2) {
+        const guardian = document.getElementById('guardianName').value.trim();
+        const errGuard = document.getElementById('err_guardianName');
+        if (guardian.length < 3) {
+          errGuard.classList.remove('hidden');
+          isValid = false;
+        } else {
+          errGuard.classList.add('hidden');
+        }
+
+        const phone = document.getElementById('guardianPhone').value.trim();
+        const errPhone = document.getElementById('err_guardianPhone');
+        if (!/^\d{8}$/.test(phone)) {
+          errPhone.classList.remove('hidden');
+          isValid = false;
+        } else {
+          errPhone.classList.add('hidden');
+        }
+      }
+
+      if (step === 3) {
+        const alertBox = document.getElementById('subjectAlert');
+        const alertText = document.getElementById('subjectAlertText');
+        if (selectedSubjects.length !== 3) {
+          alertText.textContent = `المطلوب تحديد 3 مواد دراسية بالضبط. تم اختيار (${selectedSubjects.length}) مواد حتى الآن.`;
+          alertBox.classList.remove('hidden');
+          isValid = false;
+        } else {
+          alertBox.classList.add('hidden');
+        }
+      }
+
+      if (step === 4) {
+        const pledge = document.getElementById('pledgeAgreement').checked;
+        const errPledge = document.getElementById('err_pledge');
+        if (!pledge) {
+          errPledge.classList.remove('hidden');
+          isValid = false;
+        } else {
+          errPledge.classList.add('hidden');
+        }
+      }
+
+      return isValid;
+    }
+
+    function nextStep() {
+      if (!validateStep(currentStep)) {
+        showToast("يرجى استيفاء الحقول المطلوبة بشكل صحيح قبل المتابعة", "error");
+        return;
+      }
+      if (currentStep < TOTAL_STEPS) {
+        currentStep++;
+        updateStepUI();
+      }
+    }
+
+    function prevStep() {
+      if (currentStep > 1) {
+        currentStep--;
+        updateStepUI();
+      }
+    }
+
+    function initializeSubjectSelection() {
+      const subjectCards = document.querySelectorAll('.subject-card');
+      
+      subjectCards.forEach(card => {
+        const checkbox = card.querySelector('input[type="checkbox"]');
+        const subjectName = card.getAttribute('data-subject');
+
+        card.addEventListener('click', function(e) {
+          if (e.target !== checkbox) {
+            checkbox.checked = !checkbox.checked;
+          }
+
+          if (checkbox.checked) {
+            if (selectedSubjects.length >= MAX_SUBJECTS) {
+              checkbox.checked = false;
+              showToast("الحد الأقصى هو 3 مواد فقط", "error");
+              triggerSubjectLimitAlert();
+              return;
+            }
+            selectedSubjects.push(subjectName);
+            card.classList.add('selected');
+          } else {
+            selectedSubjects = selectedSubjects.filter(sub => sub !== subjectName);
+            card.classList.remove('selected');
+          }
+
+          updateSubjectCounters();
+        });
+      });
+    }
+
+    function updateSubjectCounters() {
+      const count = selectedSubjects.length;
+      const countEl = document.getElementById('selectedCountText');
+      const badge = document.getElementById('subjectCounterBadge');
+      const alertBox = document.getElementById('subjectAlert');
+
+      countEl.textContent = count;
+
+      if (count === 3) {
+        badge.className = "inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-bold bg-[#8A1538] text-white border border-[#8A1538]";
+        alertBox.classList.add('hidden');
+      } else {
+        badge.className = "inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-bold bg-[#fdf2f4] text-[#8A1538] border border-[#f1b8c4]";
+      }
+
+      const cards = document.querySelectorAll('.subject-card');
+      cards.forEach(card => {
+        const isSelected = selectedSubjects.includes(card.getAttribute('data-subject'));
+        if (count >= MAX_SUBJECTS && !isSelected) {
+          card.classList.add('disabled');
+        } else {
+          card.classList.remove('disabled');
+        }
+      });
+    }
+
+    function triggerSubjectLimitAlert() {
+      const alertBox = document.getElementById('subjectAlert');
+      const alertText = document.getElementById('subjectAlertText');
+      alertText.textContent = "تم استيفاء العدد الأقصى (3 مواد). يمكنك إلغاء مادة سابقة إذا أردت اختيار مادة بديلة.";
+      alertBox.classList.remove('hidden');
+    }
+
+    function handleFormSubmit() {
+      if (!validateStep(4)) {
+        showToast("يرجى الموافقة والتعهد قبل إرسال الطلب", "error");
+        return;
+      }
+
+      const registrationId = 'OBK-' + new Date().getFullYear() + '-' + Math.floor(1000 + Math.random() * 9000);
+      const currentTimeStr = new Date().toLocaleString('ar-QA', { dateStyle: 'medium', timeStyle: 'short' });
+
+      const studentName = document.getElementById('studentName').value.trim();
+      const studentQid = document.getElementById('studentQid').value.trim();
+      const studentGrade = document.getElementById('studentGrade').value;
+      const studentSection = document.getElementById('studentSection').value;
+      const guardianName = document.getElementById('guardianName').value.trim();
+      const guardianRelation = document.getElementById('guardianRelation').value;
+      const guardianPhone = document.getElementById('guardianPhone').value.trim();
+      const guardianPhone2 = document.getElementById('guardianPhone2').value.trim() || 'لا يوجد';
+      const preferredTime = document.querySelector('input[name="preferredTime"]:checked').value;
+      const transportType = document.getElementById('transportType').value;
+      const studentNotes = document.getElementById('studentNotes').value.trim() || 'لا توجد ملاحظات خاصة';
+      const subjectsText = selectedSubjects.join(' ، ');
+
+      // Populate Receipt Details
+      document.getElementById('recCode').textContent = registrationId;
+      document.getElementById('recName').textContent = studentName;
+      document.getElementById('recQid').textContent = studentQid;
+      document.getElementById('recGradeSection').textContent = `${studentGrade} - شعبة (${studentSection})`;
+      document.getElementById('recGuardian').textContent = `${guardianName} [${guardianRelation}] - ${guardianPhone}`;
+      document.getElementById('recTimestamp').textContent = currentTimeStr;
+
+      const recSubContainer = document.getElementById('recSubjectsList');
+      recSubContainer.innerHTML = '';
+      selectedSubjects.forEach(sub => {
+        const chip = document.createElement('span');
+        chip.className = "px-3 py-1 bg-[#fdf2f4] text-[#8A1538] rounded-lg font-bold text-xs border border-[#f1b8c4]";
+        chip.innerHTML = `<i class="fa-solid fa-check ml-1 text-[#8A1538]"></i> ${sub}`;
+        recSubContainer.appendChild(chip);
+      });
+
+      // Construct Official WhatsApp Message to Coordinator (Tamim Al-Dosari - 31098549)
+      const rawMessage = `السلام عليكم ورحمة الله وبركاته،%0A` +
+        `*الأستاذ الفاضل: تميم الدوسري (مسؤول دروس التقوية)*%0A` +
+        `*مدرسة عمر بن الخطاب الابتدائية للبنين*%0A%0A` +
+        `تم تسجيل استمارة تقوية جديدة للطالب وبياناته كالتالي:%0A` +
+        `━━━━━━━━━━━━━━━━━━%0A` +
+        `📌 *رقم التسجيل:* ${registrationId}%0A` +
+        `👤 *اسم الطالب:* ${studentName}%0A` +
+        `🪪 *الرقم الشخصي (QID):* ${studentQid}%0A` +
+        `🏫 *الصف الدراسي:* ${studentGrade} (شعبة ${studentSection})%0A` +
+        `📚 *المواد المختارة (3 مواد):* ${subjectsText}%0A` +
+        `⏰ *الفترة المفضلة:* ${preferredTime}%0A` +
+        `🚌 *وسيلة الانصراف:* ${transportType}%0A` +
+        `👨‍👦 *ولي الأمر:* ${guardianName} (${guardianRelation})%0A` +
+        `📱 *هاتف التواصل:* ${guardianPhone}%0A` +
+        (guardianPhone2 !== 'لا يوجد' ? `📞 *هاتف إضافي:* ${guardianPhone2}%0A` : '') +
+        `📝 *ملاحظات ولي الأمر:* ${studentNotes}%0A` +
+        `━━━━━━━━━━━━━━━━━━%0A` +
+        `نرجو التكرم باعتماد قيد الطالب في الشعبة الدراسية، وشكراً لكم.`;
+
+      const whatsappUrl = `https://wa.me/${COORDINATOR_PHONE}?text=${rawMessage}`;
+      
+      // Update link in receipt
+      const whatsappBtn = document.getElementById('recWhatsappBtn');
+      whatsappBtn.setAttribute('href', whatsappUrl);
+
+      // Switch screens
+      document.getElementById('formContainer').classList.add('hidden');
+      document.getElementById('openNoticeBanner').classList.add('hidden');
+      document.getElementById('receiptSection').classList.remove('hidden');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+
+      // Automatically open WhatsApp in a new tab for seamless parent experience
+      window.open(whatsappUrl, '_blank');
+      showToast("تم تسجيل الاستمارة بنجاح! جاري فتح الواتساب لإرسالها للأستاذ تميم الدوسري", "success");
+    }
+
+    function resetAllFields() {
+      document.getElementById('studentName').value = '';
+      document.getElementById('studentQid').value = '';
+      document.getElementById('studentGrade').selectedIndex = 0;
+      document.getElementById('studentSection').selectedIndex = 0;
+      document.getElementById('guardianName').value = '';
+      document.getElementById('guardianPhone').value = '';
+      document.getElementById('guardianPhone2').value = '';
+      document.getElementById('studentNotes').value = '';
+      document.getElementById('pledgeAgreement').checked = false;
+
+      selectedSubjects = [];
+      const checkboxes = document.querySelectorAll('input[name="subjects"]');
+      checkboxes.forEach(cb => cb.checked = false);
+      const cards = document.querySelectorAll('.subject-card');
+      cards.forEach(card => card.classList.remove('selected', 'disabled'));
+
+      document.querySelectorAll('[id^="err_"]').forEach(el => el.classList.add('hidden'));
+      document.getElementById('subjectAlert').classList.add('hidden');
+
+      currentStep = 1;
+      updateSubjectCounters();
+      updateStepUI();
+      showToast("تمت إعادة ضبط الحقول", "info");
+    }
+
+    function submitNewForm() {
+      resetAllFields();
+      document.getElementById('receiptSection').classList.add('hidden');
+      document.getElementById('formContainer').classList.remove('hidden');
+      document.getElementById('openNoticeBanner').classList.remove('hidden');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function showToast(message, type = 'info') {
+      const toast = document.getElementById('toastNotification');
+      let bgColor = 'bg-slate-900';
+      let icon = 'fa-circle-info';
+
+      if (type === 'success') {
+        bgColor = 'bg-emerald-700';
+        icon = 'fa-circle-check';
+      } else if (type === 'error') {
+        bgColor = 'bg-rose-700';
+        icon = 'fa-circle-exclamation';
+      }
+
+      toast.className = `fixed bottom-6 left-1/2 -translate-x-1/2 z-50 px-5 py-3 rounded-xl shadow-2xl text-white text-xs sm:text-sm font-bold flex items-center gap-2 transition-all ${bgColor}`;
+      toast.innerHTML = `<i class="fa-solid ${icon}"></i> <span>${message}</span>`;
+      toast.classList.remove('hidden');
+
+      setTimeout(() => {
+        toast.classList.add('hidden');
+      }, 4000);
+    }
+
+    // Startup Initialization
+    window.addEventListener('DOMContentLoaded', () => {
+      initializeSubjectSelection();
+      updateStepUI();
+    });
+  </script>
+</body>
+</html>

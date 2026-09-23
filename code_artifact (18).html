@@ -1,0 +1,1740 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>نظام تسجيل دروس التقوية - مدرسة عمر بن الخطاب الابتدائية للبنين</title>
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Google Fonts: Official Ministry Typography (Tajawal & Almarai) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Almarai:wght@400;700;800&family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+  
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <style>
+    :root {
+      --maroon-primary: #8A1538;
+      --maroon-dark: #6a0f2b;
+      --maroon-light: #fdf2f4;
+      --maroon-border: #f1b8c4;
+    }
+    
+    body {
+      font-family: 'Tajawal', 'Almarai', sans-serif;
+      background-color: #fafafa;
+      color: #1e293b;
+    }
+
+    .bg-maroon {
+      background-color: #8A1538;
+    }
+
+    .bg-maroon-dark {
+      background-color: #6a0f2b;
+    }
+
+    .text-maroon {
+      color: #8A1538;
+    }
+
+    .border-maroon {
+      border-color: #8A1538;
+    }
+
+    .form-shadow {
+      box-shadow: 0 10px 25px -5px rgba(138, 21, 56, 0.07), 0 8px 10px -6px rgba(15, 23, 42, 0.04);
+    }
+    
+    .subject-card {
+      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    
+    .subject-card.selected {
+      border-color: #8A1538;
+      background-color: #fdf2f4;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 14px -2px rgba(138, 21, 56, 0.2);
+    }
+
+    .subject-card.disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      filter: grayscale(30%);
+    }
+
+    .step-content {
+      display: none;
+      animation: formStepFade 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    .step-content.active {
+      display: block;
+    }
+
+    @keyframes formStepFade {
+      from {
+        opacity: 0;
+        transform: translateY(6px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .step-bullet.completed {
+      background-color: #8A1538;
+      color: #ffffff;
+      border-color: #8A1538;
+    }
+
+    .step-bullet.current {
+      background-color: #8A1538;
+      color: #ffffff;
+      box-shadow: 0 0 0 4px rgba(138, 21, 56, 0.2);
+      border-color: #8A1538;
+    }
+
+    @media print {
+      body * {
+        visibility: hidden;
+      }
+      #receiptSection, #receiptSection * {
+        visibility: visible;
+      }
+      #receiptSection {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        margin: 0;
+        padding: 20px;
+        box-shadow: none;
+      }
+      .no-print {
+        display: none !important;
+      }
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between pb-10 bg-slate-50">
+
+  <!-- Official Header Bar -->
+  <header class="bg-white border-b-2 border-[#8A1538] sticky top-0 z-40 shadow-sm">
+    <!-- Top Maroon Decorative Stripe -->
+    <div class="h-1.5 w-full bg-[#8A1538]"></div>
+
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between">
+      <div class="flex items-center space-x-3.5 space-x-reverse">
+        <!-- Ministry Emblem Badge -->
+        <div class="w-12 h-12 rounded-xl bg-[#8A1538] text-white flex items-center justify-center shadow-md">
+          <i class="fa-solid fa-landmark text-xl"></i>
+        </div>
+        <div>
+          <div class="flex items-center gap-2">
+            <span class="text-[11px] font-bold tracking-wider text-slate-500 uppercase">وزارة التربية والتعليم والتعليم العالي</span>
+          </div>
+          <h1 class="text-base sm:text-lg font-black text-slate-900 leading-tight">مدرسة عمر بن الخطاب الابتدائية للبنين</h1>
+          <p class="text-xs text-[#8A1538] font-bold">بوابة التسجيل لدروس التقوية الإثرائية</p>
+        </div>
+      </div>
+      
+      <!-- Protected Admin Access Trigger (No password leak) -->
+      <button 
+        onclick="openAdminAccessModal()" 
+        class="px-3.5 py-2 text-xs font-bold text-slate-700 bg-white hover:bg-slate-100 rounded-xl border border-slate-300 flex items-center gap-1.5 transition shadow-sm"
+        title="دخول الإدارة المدرسية المخصص"
+      >
+        <i class="fa-solid fa-shield-halved text-[#8A1538]"></i>
+        <span class="hidden sm:inline">لوحة الإدارة</span>
+      </button>
+    </div>
+  </header>
+
+  <main class="max-w-3xl mx-auto px-4 sm:px-6 mt-6 flex-1 w-full">
+    
+    <!-- Toast Notification Banner -->
+    <div id="toastNotification" class="hidden fixed bottom-6 left-1/2 -translate-x-1/2 z-50 px-5 py-3 rounded-xl shadow-2xl text-white text-sm font-bold flex items-center gap-2 transition-all"></div>
+
+    <!-- Closed Registration Notice (Locked from Monday as requested) -->
+    <div id="closedRegistrationCard" class="hidden bg-white rounded-2xl p-6 sm:p-10 form-shadow border-t-8 border-t-[#8A1538] border border-slate-200 text-center space-y-4">
+      <div class="w-20 h-20 rounded-full bg-[#fdf2f4] text-[#8A1538] flex items-center justify-center text-3xl mx-auto shadow-sm">
+        <i class="fa-solid fa-calendar-xmark"></i>
+      </div>
+      <div class="space-y-2">
+        <span class="inline-block px-3 py-1 bg-rose-100 text-[#8A1538] text-xs font-extrabold rounded-full">
+          تم قفل باب التقديم
+        </span>
+        <h2 class="text-xl sm:text-2xl font-black text-slate-900">نحيطكم علماً بأنه قد تم إغلاق باب التسجيل لدروس التقوية</h2>
+        <p class="text-sm text-slate-600 max-w-lg mx-auto leading-relaxed">
+          انتهت المهلة المحددة لاستقبال استمارات التسجيل في دروس التقوية بمدرسة <strong>عمر بن الخطاب الابتدائية للبنين</strong> لحصر القوائم واعتماد الشعب الدراسية.
+        </p>
+      </div>
+
+      <div class="bg-[#fdf2f4] border border-[#f1b8c4] p-4 rounded-xl text-xs text-[#8A1538] max-w-md mx-auto space-y-1 text-right">
+        <div class="font-bold flex items-center gap-1.5">
+          <i class="fa-solid fa-circle-info"></i>
+          <span>للحالات الخاصة أو الاستفسار:</span>
+        </div>
+        <p class="text-slate-600 pr-5">يرجى مراجعة المشرف الأكاديمي لشؤون الطلاب بالحضور المباشر إلى مقر المدرسة خلال أوقات الدوام الرسمي.</p>
+      </div>
+    </div>
+
+    <!-- Main Registration Wizard Form -->
+    <div id="formContainer" class="space-y-6">
+
+      <!-- Official Announcement Banner: Open Now & Deadline on Monday -->
+      <div class="bg-emerald-50 border-2 border-emerald-300/80 rounded-2xl p-4 sm:p-5 flex items-start sm:items-center gap-3.5 shadow-sm">
+        <div class="w-10 h-10 rounded-xl bg-emerald-700 text-white flex items-center justify-center shrink-0 text-lg shadow-sm">
+          <i class="fa-solid fa-bullhorn"></i>
+        </div>
+        <div class="flex-1 text-right">
+          <div class="flex items-center gap-2 mb-0.5">
+            <span class="font-black text-emerald-950 text-sm">التسجيل متاح ومفتوح حالياً</span>
+            <span class="px-2 py-0.5 bg-emerald-200 text-emerald-900 text-[10px] font-black rounded-md">مفتوح الآن</span>
+          </div>
+          <p class="text-xs sm:text-sm text-slate-700 leading-relaxed font-medium">
+            يرجى من السادة أولياء الأمور الكرام المبادرة بتسجيل أبنائهم، علماً بأن باب استقبال الطلبات <strong>سيُغلق يوم الإثنين</strong> لحصر القوائم واعتماد المجموعات الدراسية.
+          </p>
+        </div>
+      </div>
+      
+      <!-- Stepper Header Card -->
+      <div class="bg-white rounded-2xl border-t-8 border-t-[#8A1538] form-shadow border border-slate-200/90 p-5 sm:p-7">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 pb-5 mb-5">
+          <div>
+            <div class="flex items-center gap-2 mb-1.5">
+              <span class="px-2.5 py-0.5 bg-[#fdf2f4] text-[#8A1538] text-xs font-bold rounded-md border border-[#f1b8c4]">
+                <i class="fa-solid fa-school ml-1"></i> مدرسة عمر بن الخطاب الابتدائية للبنين
+              </span>
+              <span class="px-2.5 py-0.5 bg-emerald-50 text-emerald-800 text-xs font-bold rounded-md flex items-center gap-1 border border-emerald-200">
+                <i class="fa-solid fa-cloud text-xs"></i> حفظ سحابي معتمد
+              </span>
+            </div>
+            <h2 class="text-xl sm:text-2xl font-black text-slate-800" id="stepTitleDisplay">بيانات الطالب الأساسية</h2>
+          </div>
+          
+          <div class="text-left">
+            <span class="text-xs text-slate-500 font-bold block">مرحلة الاستمارة</span>
+            <span class="text-sm font-black text-[#8A1538] font-mono" id="stepCounterText">الخطوة 1 من 4</span>
+          </div>
+        </div>
+
+        <!-- Progress Bar (Maroon & White) -->
+        <div class="w-full bg-slate-100 h-2 rounded-full overflow-hidden mb-6">
+          <div id="wizardProgressBar" class="bg-[#8A1538] h-full w-1/4 transition-all duration-300"></div>
+        </div>
+
+        <!-- Steps Indicators Pills -->
+        <div class="grid grid-cols-4 gap-2 text-center text-xs">
+          <div class="step-indicator-item flex flex-col items-center gap-1.5" data-step="1">
+            <div class="step-bullet w-8 h-8 rounded-full border-2 border-slate-300 font-bold flex items-center justify-center transition-all current text-xs" id="bullet-1">
+              1
+            </div>
+            <span class="text-[11px] font-bold text-slate-700 hidden sm:inline">بيانات الطالب</span>
+          </div>
+
+          <div class="step-indicator-item flex flex-col items-center gap-1.5" data-step="2">
+            <div class="step-bullet w-8 h-8 rounded-full border-2 border-slate-300 text-slate-500 font-bold flex items-center justify-center transition-all text-xs" id="bullet-2">
+              2
+            </div>
+            <span class="text-[11px] font-bold text-slate-500 hidden sm:inline">ولي الأمر</span>
+          </div>
+
+          <div class="step-indicator-item flex flex-col items-center gap-1.5" data-step="3">
+            <div class="step-bullet w-8 h-8 rounded-full border-2 border-slate-300 text-slate-500 font-bold flex items-center justify-center transition-all text-xs" id="bullet-3">
+              3
+            </div>
+            <span class="text-[11px] font-bold text-slate-500 hidden sm:inline">المواد (3 فقط)</span>
+          </div>
+
+          <div class="step-indicator-item flex flex-col items-center gap-1.5" data-step="4">
+            <div class="step-bullet w-8 h-8 rounded-full border-2 border-slate-300 text-slate-500 font-bold flex items-center justify-center transition-all text-xs" id="bullet-4">
+              4
+            </div>
+            <span class="text-[11px] font-bold text-slate-500 hidden sm:inline">الموعد والتعهد</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Step 1: Student Information -->
+      <section class="step-content active bg-white rounded-2xl p-6 sm:p-8 form-shadow border border-slate-200" id="step-1">
+        <div class="flex items-center gap-3 mb-6 pb-3 border-b border-slate-100">
+          <div class="w-10 h-10 rounded-xl bg-[#fdf2f4] text-[#8A1538] flex items-center justify-center font-bold text-base">
+            <i class="fa-solid fa-user-graduate"></i>
+          </div>
+          <div>
+            <h3 class="text-base sm:text-lg font-black text-slate-900">الخطوة الأولى: بيانات الطالب المدرسية</h3>
+            <p class="text-xs text-slate-500">يرجى تسجيل بيانات الطالب كما هي مسجلة في نظام الوزارة</p>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+          <!-- Student Full Name -->
+          <div class="sm:col-span-2">
+            <label class="block text-sm font-bold text-slate-800 mb-1.5" for="studentName">
+              اسم الطالب الرباعي <span class="text-[#8A1538]">*</span>
+            </label>
+            <input 
+              type="text" 
+              id="studentName" 
+              placeholder="مثال: محمد راشد عبد الله الكواري" 
+              class="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-[#8A1538] focus:border-[#8A1538] transition text-sm text-slate-800 placeholder:text-slate-400"
+              required
+            >
+            <span class="text-xs text-rose-600 hidden mt-1" id="err_studentName">يرجى كتابة الاسم الرباعي كاملاً للطالب</span>
+          </div>
+
+          <!-- Civil ID / Student ID -->
+          <div>
+            <label class="block text-sm font-bold text-slate-800 mb-1.5" for="studentQid">
+              الرقم الشخصي للطالب (QID) <span class="text-[#8A1538]">*</span>
+            </label>
+            <input 
+              type="tel" 
+              id="studentQid" 
+              maxlength="11" 
+              placeholder="الرقم الشخصي (11 رقماً)" 
+              class="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-[#8A1538] focus:border-[#8A1538] transition text-sm text-slate-800 placeholder:text-slate-400 font-mono"
+              required
+            >
+            <span class="text-xs text-rose-600 hidden mt-1" id="err_studentQid">يرجى إدخال الرقم الشخصي المكون من 11 رقماً صحيحاً</span>
+          </div>
+
+          <!-- Grade Level -->
+          <div>
+            <label class="block text-sm font-bold text-slate-800 mb-1.5" for="studentGrade">
+              الصف الدراسي <span class="text-[#8A1538]">*</span>
+            </label>
+            <select 
+              id="studentGrade" 
+              class="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-[#8A1538] focus:border-[#8A1538] transition text-sm text-slate-800 bg-white"
+              required
+            >
+              <option value="" disabled selected>-- اختر الصف الدراسي --</option>
+              <option value="الصف الأول الابتدائي">الصف الأول الابتدائي</option>
+              <option value="الصف الثاني الابتدائي">الصف الثاني الابتدائي</option>
+              <option value="الصف الثالث الابتدائي">الصف الثالث الابتدائي</option>
+              <option value="الصف الرابع الابتدائي">الصف الرابع الابتدائي</option>
+              <option value="الصف الخامس الابتدائي">الصف الخامس الابتدائي</option>
+              <option value="الصف السادس الابتدائي">الصف السادس الابتدائي</option>
+            </select>
+            <span class="text-xs text-rose-600 hidden mt-1" id="err_studentGrade">يرجى اختيار الصف الدراسي</span>
+          </div>
+
+          <!-- Class Section -->
+          <div>
+            <label class="block text-sm font-bold text-slate-800 mb-1.5" for="studentSection">
+              الشعبة <span class="text-[#8A1538]">*</span>
+            </label>
+            <select 
+              id="studentSection" 
+              class="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-[#8A1538] focus:border-[#8A1538] transition text-sm text-slate-800 bg-white"
+              required
+            >
+              <option value="" disabled selected>-- اختر الشعبة --</option>
+              <option value="1">شعبة 1</option>
+              <option value="2">شعبة 2</option>
+              <option value="3">شعبة 3</option>
+              <option value="4">شعبة 4</option>
+              <option value="5">شعبة 5</option>
+              <option value="6">شعبة 6</option>
+            </select>
+            <span class="text-xs text-rose-600 hidden mt-1" id="err_studentSection">يرجى تحديد الشعبة</span>
+          </div>
+
+          <!-- Dismissal Transport -->
+          <div>
+            <label class="block text-sm font-bold text-slate-800 mb-1.5" for="transportType">
+              وسيلة الانصراف بعد انتهاء الحصة <span class="text-[#8A1538]">*</span>
+            </label>
+            <select 
+              id="transportType" 
+              class="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-[#8A1538] focus:border-[#8A1538] transition text-sm text-slate-800 bg-white"
+            >
+              <option value="سيارة خاصة (مع ولي الأمر)">سيارة خاصة (مع ولي الأمر)</option>
+              <option value="حافلة المدرسة">حافلة المدرسة</option>
+              <option value="مشياً على الأقدام">مشياً على الأقدام (قاطن بجوار المدرسة)</option>
+            </select>
+          </div>
+        </div>
+      </section>
+
+      <!-- Step 2: Guardian Information -->
+      <section class="step-content bg-white rounded-2xl p-6 sm:p-8 form-shadow border border-slate-200" id="step-2">
+        <div class="flex items-center gap-3 mb-6 pb-3 border-b border-slate-100">
+          <div class="w-10 h-10 rounded-xl bg-[#fdf2f4] text-[#8A1538] flex items-center justify-center font-bold text-base">
+            <i class="fa-solid fa-users"></i>
+          </div>
+          <div>
+            <h3 class="text-base sm:text-lg font-black text-slate-900">الخطوة الثانية: بيانات التواصل مع ولي الأمر</h3>
+            <p class="text-xs text-slate-500">للتنسيق والمتابعة وإرسال التنبيهات المدرسية</p>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+          <!-- Guardian Full Name -->
+          <div>
+            <label class="block text-sm font-bold text-slate-800 mb-1.5" for="guardianName">
+              اسم ولي الأمر <span class="text-[#8A1538]">*</span>
+            </label>
+            <input 
+              type="text" 
+              id="guardianName" 
+              placeholder="اسم ولي أمر الطالب" 
+              class="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-[#8A1538] focus:border-[#8A1538] transition text-sm text-slate-800 placeholder:text-slate-400"
+              required
+            >
+            <span class="text-xs text-rose-600 hidden mt-1" id="err_guardianName">يرجى إدخال اسم ولي الأمر</span>
+          </div>
+
+          <!-- Guardian Relation -->
+          <div>
+            <label class="block text-sm font-bold text-slate-800 mb-1.5" for="guardianRelation">
+              صلة القرابة <span class="text-[#8A1538]">*</span>
+            </label>
+            <select 
+              id="guardianRelation" 
+              class="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-[#8A1538] focus:border-[#8A1538] transition text-sm text-slate-800 bg-white"
+            >
+              <option value="الأب">الأب</option>
+              <option value="الأم">الأم</option>
+              <option value="الأخ الأكبر / العم / الخال">ولي أمر آخر (أخ / عم / خال)</option>
+            </select>
+          </div>
+
+          <!-- Phone Number -->
+          <div>
+            <label class="block text-sm font-bold text-slate-800 mb-1.5" for="guardianPhone">
+              رقم هاتف التواصل المعتمد (واتساب) <span class="text-[#8A1538]">*</span>
+            </label>
+            <input 
+              type="tel" 
+              id="guardianPhone" 
+              placeholder="مثال: 55123456" 
+              class="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-[#8A1538] focus:border-[#8A1538] transition text-sm text-slate-800 font-mono"
+              required
+            >
+            <span class="text-xs text-rose-600 hidden mt-1" id="err_guardianPhone">يرجى إدخال رقم هاتف صحيح للتواصل</span>
+          </div>
+
+          <!-- Emergency Phone -->
+          <div>
+            <label class="block text-sm font-bold text-slate-800 mb-1.5" for="guardianPhone2">
+              رقم هاتف إضافي للطوارئ (اختياري)
+            </label>
+            <input 
+              type="tel" 
+              id="guardianPhone2" 
+              placeholder="رقم طوارئ آخر" 
+              class="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-[#8A1538] focus:border-[#8A1538] transition text-sm text-slate-800 font-mono"
+            >
+          </div>
+        </div>
+      </section>
+
+      <!-- Step 3: Subject Selection (Strictly 3 Required, No CS, No Islamic) -->
+      <section class="step-content bg-white rounded-2xl p-6 sm:p-8 form-shadow border border-slate-200" id="step-3">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6 pb-3 border-b border-slate-100">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-xl bg-[#fdf2f4] text-[#8A1538] flex items-center justify-center font-bold text-base">
+              <i class="fa-solid fa-list-check"></i>
+            </div>
+            <div>
+              <h3 class="text-base sm:text-lg font-black text-slate-900">الخطوة الثالثة: اختيار المواد الدراسية</h3>
+              <p class="text-xs text-slate-500">المطلوب تحديد <strong>3 مواد دراسية بالضبط</strong> لتقوية مستوى الطالب</p>
+            </div>
+          </div>
+
+          <!-- Dynamic Counter Badge in Maroon/White -->
+          <div class="self-start sm:self-auto">
+            <span id="subjectCounterBadge" class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-bold bg-[#fdf2f4] text-[#8A1538] border border-[#f1b8c4]">
+              <i class="fa-solid fa-circle-check"></i>
+              <span>المواد المختارة: </span>
+              <span id="selectedCountText" class="text-sm font-black">0</span> / 3
+            </span>
+          </div>
+        </div>
+
+        <!-- Excluded Notice (Computer Science & Islamic Studies) -->
+        <div class="mb-5 flex items-center gap-2 p-3.5 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-700">
+          <i class="fa-solid fa-triangle-exclamation text-[#8A1538] text-sm"></i>
+          <span>تنبيه رسمي: مادتي <strong>الحاسوب وتكنولوجيا المعلومات</strong> و<strong>التربية الإسلامية</strong> <u>غير مشمولتين</u> في خطة دروس التقوية.</span>
+        </div>
+
+        <!-- Subjects Grid (Maroon Selected accents) -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5" id="subjectsGrid">
+          
+          <!-- Subject 1: Arabic -->
+          <label class="subject-card border-2 border-slate-200 rounded-xl p-4 flex items-center justify-between cursor-pointer hover:border-[#8A1538]/50 bg-white" data-subject="اللغة العربية">
+            <div class="flex items-center gap-3.5">
+              <div class="w-10 h-10 rounded-xl bg-[#fdf2f4] text-[#8A1538] flex items-center justify-center text-lg">
+                <i class="fa-solid fa-book-open"></i>
+              </div>
+              <div>
+                <h4 class="font-bold text-slate-900 text-sm">اللغة العربية</h4>
+                <p class="text-xs text-slate-400">مهارات القراءة والكتابة والنحو والإملاء</p>
+              </div>
+            </div>
+            <input type="checkbox" name="subjects" value="اللغة العربية" class="w-5 h-5 rounded text-[#8A1538] focus:ring-[#8A1538] border-slate-300">
+          </label>
+
+          <!-- Subject 2: Mathematics -->
+          <label class="subject-card border-2 border-slate-200 rounded-xl p-4 flex items-center justify-between cursor-pointer hover:border-[#8A1538]/50 bg-white" data-subject="الرياضيات">
+            <div class="flex items-center gap-3.5">
+              <div class="w-10 h-10 rounded-xl bg-[#fdf2f4] text-[#8A1538] flex items-center justify-center text-lg">
+                <i class="fa-solid fa-calculator"></i>
+              </div>
+              <div>
+                <h4 class="font-bold text-slate-900 text-sm">الرياضيات</h4>
+                <p class="text-xs text-slate-400">العمليات الحسابية والمسائل والتحليل</p>
+              </div>
+            </div>
+            <input type="checkbox" name="subjects" value="الرياضيات" class="w-5 h-5 rounded text-[#8A1538] focus:ring-[#8A1538] border-slate-300">
+          </label>
+
+          <!-- Subject 3: English Language -->
+          <label class="subject-card border-2 border-slate-200 rounded-xl p-4 flex items-center justify-between cursor-pointer hover:border-[#8A1538]/50 bg-white" data-subject="اللغة الإنجليزية">
+            <div class="flex items-center gap-3.5">
+              <div class="w-10 h-10 rounded-xl bg-[#fdf2f4] text-[#8A1538] flex items-center justify-center text-lg">
+                <i class="fa-solid fa-language"></i>
+              </div>
+              <div>
+                <h4 class="font-bold text-slate-900 text-sm">اللغة الإنجليزية</h4>
+                <p class="text-xs text-slate-400">الصوتيات Phonics، القراءة وبناء المفردات</p>
+              </div>
+            </div>
+            <input type="checkbox" name="subjects" value="اللغة الإنجليزية" class="w-5 h-5 rounded text-[#8A1538] focus:ring-[#8A1538] border-slate-300">
+          </label>
+
+          <!-- Subject 4: General Science -->
+          <label class="subject-card border-2 border-slate-200 rounded-xl p-4 flex items-center justify-between cursor-pointer hover:border-[#8A1538]/50 bg-white" data-subject="العلوم العامة">
+            <div class="flex items-center gap-3.5">
+              <div class="w-10 h-10 rounded-xl bg-[#fdf2f4] text-[#8A1538] flex items-center justify-center text-lg">
+                <i class="fa-solid fa-flask"></i>
+              </div>
+              <div>
+                <h4 class="font-bold text-slate-900 text-sm">العلوم العامة</h4>
+                <p class="text-xs text-slate-400">المفاهيم العلمية والتجارب الاستكشافية</p>
+              </div>
+            </div>
+            <input type="checkbox" name="subjects" value="العلوم العامة" class="w-5 h-5 rounded text-[#8A1538] focus:ring-[#8A1538] border-slate-300">
+          </label>
+
+          <!-- Subject 5: Social Studies -->
+          <label class="subject-card border-2 border-slate-200 rounded-xl p-4 flex items-center justify-between cursor-pointer hover:border-[#8A1538]/50 bg-white sm:col-span-2" data-subject="الدراسات الاجتماعية">
+            <div class="flex items-center gap-3.5">
+              <div class="w-10 h-10 rounded-xl bg-[#fdf2f4] text-[#8A1538] flex items-center justify-center text-lg">
+                <i class="fa-solid fa-earth-asia"></i>
+              </div>
+              <div>
+                <h4 class="font-bold text-slate-900 text-sm">الدراسات الاجتماعية</h4>
+                <p class="text-xs text-slate-400">المواطنة، الجغرافيا، تاريخ دولة قطر والهوية</p>
+              </div>
+            </div>
+            <input type="checkbox" name="subjects" value="الدراسات الاجتماعية" class="w-5 h-5 rounded text-[#8A1538] focus:ring-[#8A1538] border-slate-300">
+          </label>
+
+        </div>
+
+        <!-- Alert if not 3 -->
+        <div id="subjectAlert" class="mt-4 hidden p-3 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-xs flex items-center gap-2">
+          <i class="fa-solid fa-triangle-exclamation"></i>
+          <span id="subjectAlertText">المطلوب تحديد 3 مواد دراسية بالضبط للاستمرار.</span>
+        </div>
+      </section>
+
+      <!-- Step 4: Schedule Preference & Guardian Pledge -->
+      <section class="step-content bg-white rounded-2xl p-6 sm:p-8 form-shadow border border-slate-200" id="step-4">
+        <div class="flex items-center gap-3 mb-6 pb-3 border-b border-slate-100">
+          <div class="w-10 h-10 rounded-xl bg-[#fdf2f4] text-[#8A1538] flex items-center justify-center font-bold text-base">
+            <i class="fa-solid fa-clock"></i>
+          </div>
+          <div>
+            <h3 class="text-base sm:text-lg font-black text-slate-900">الخطوة الرابعة: التفضيل الزمني والتعهد المكتوب</h3>
+            <p class="text-xs text-slate-500">الخطوة الختامية لتثبيت وإرسال استمارة الطالب</p>
+          </div>
+        </div>
+
+        <div class="space-y-5">
+          <!-- Preferred Timing -->
+          <div>
+            <label class="block text-sm font-bold text-slate-800 mb-2">
+              الفترة المفضلة لحضور الحصص <span class="text-[#8A1538]">*</span>
+            </label>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <label class="border-2 border-slate-200 p-3.5 rounded-xl flex items-center gap-3 cursor-pointer hover:bg-slate-50 transition has-[:checked]:border-[#8A1538] has-[:checked]:bg-[#fdf2f4]">
+                <input type="radio" name="preferredTime" value="الفترة الصباحية (قبل طابور الصباح: 6:30 - 7:15)" checked class="text-[#8A1538] focus:ring-[#8A1538]">
+                <div class="text-xs">
+                  <div class="font-bold text-slate-900">الفترة الصباحية</div>
+                  <div class="text-slate-500">قبل الطابور الصباحي (6:30 إلى 7:15 صباحاً)</div>
+                </div>
+              </label>
+
+              <label class="border-2 border-slate-200 p-3.5 rounded-xl flex items-center gap-3 cursor-pointer hover:bg-slate-50 transition has-[:checked]:border-[#8A1538] has-[:checked]:bg-[#fdf2f4]">
+                <input type="radio" name="preferredTime" value="الفترة بعد الدوام (1:30 - 2:30 ظهراً)" class="text-[#8A1538] focus:ring-[#8A1538]">
+                <div class="text-xs">
+                  <div class="font-bold text-slate-900">الفترة بعد الدوام المدرسي</div>
+                  <div class="text-slate-500">مباشرة بعد انتهاء اليوم المدرسي (1:30 إلى 2:30 ظهراً)</div>
+                </div>
+              </label>
+            </div>
+          </div>
+
+          <!-- Notes -->
+          <div>
+            <label class="block text-sm font-bold text-slate-800 mb-1.5" for="studentNotes">
+              ملاحظات أو مهارات ترغب بالتركيز عليها للطالب
+            </label>
+            <textarea 
+              id="studentNotes" 
+              rows="3" 
+              placeholder="مثال: التركيز على مهارات التهجئة والإملاء، أو عمليات الضرب والقسمة..." 
+              class="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-[#8A1538] focus:border-[#8A1538] transition text-sm text-slate-800 placeholder:text-slate-400 resize-none"
+            ></textarea>
+          </div>
+
+          <!-- Pledge Agreement -->
+          <div class="pt-3 border-t border-slate-100">
+            <label class="flex items-start gap-3 cursor-pointer select-none">
+              <input type="checkbox" id="pledgeAgreement" class="mt-1 w-4 h-4 rounded text-[#8A1538] focus:ring-[#8A1538] border-slate-300" required>
+              <span class="text-xs text-slate-700 leading-relaxed font-medium">
+                أتعهد أنا ولي أمر الطالب بالالتزام بمواعيد الحصص المقررة بمدرسة عمر بن الخطاب الابتدائية للبنين، ومتابعة حضور ابني ومستواه مع الهيئة التدريسية.
+              </span>
+            </label>
+            <span class="text-xs text-rose-600 hidden mt-1 block" id="err_pledge">يرجى الموافقة والتعهد لإتمام إرسال الطلب</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Wizard Navigation Buttons -->
+      <div class="flex items-center justify-between gap-4 pt-2">
+        <button 
+          type="button" 
+          id="prevBtn" 
+          onclick="prevStep()" 
+          class="hidden px-5 py-3 rounded-xl border border-slate-300 bg-white hover:bg-slate-100 text-slate-700 font-bold text-sm flex items-center gap-2 transition"
+        >
+          <i class="fa-solid fa-arrow-right"></i>
+          <span>السابق</span>
+        </button>
+
+        <div class="mr-auto flex items-center gap-3">
+          <button 
+            type="button" 
+            onclick="resetAllFields()" 
+            class="px-4 py-3 text-slate-400 hover:text-slate-600 text-xs font-bold transition flex items-center gap-1.5"
+            title="إعادة تعيين النموذج"
+          >
+            <i class="fa-solid fa-rotate-left"></i>
+            <span class="hidden sm:inline">إعادة تعيين</span>
+          </button>
+
+          <button 
+            type="button" 
+            id="nextBtn" 
+            onclick="nextStep()" 
+            class="px-8 py-3.5 bg-[#8A1538] hover:bg-[#6a0f2b] text-white font-bold rounded-xl shadow-lg shadow-[#8A1538]/20 flex items-center gap-2 transition transform active:scale-95 text-sm"
+          >
+            <span>التالي</span>
+            <i class="fa-solid fa-arrow-left"></i>
+          </button>
+
+          <button 
+            type="button" 
+            id="submitBtn" 
+            onclick="handleFormSubmit()" 
+            class="hidden px-8 py-3.5 bg-gradient-to-r from-[#8A1538] to-[#6a0f2b] hover:from-[#72102e] hover:to-[#550b22] text-white font-bold rounded-xl shadow-lg shadow-[#8A1538]/25 flex items-center gap-2 transition transform active:scale-95 text-sm"
+          >
+            <i class="fa-solid fa-cloud-arrow-up"></i>
+            <span>تأكيد وحفظ الاستمارة</span>
+          </button>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Success & Receipt Section -->
+    <div id="receiptSection" class="hidden space-y-6">
+      <div class="bg-white rounded-2xl p-6 sm:p-10 form-shadow border-t-8 border-t-[#8A1538] border border-slate-200 text-center">
+        
+        <div class="w-20 h-20 rounded-full bg-[#fdf2f4] text-[#8A1538] flex items-center justify-center text-4xl mx-auto mb-4 border border-[#f1b8c4]">
+          <i class="fa-solid fa-check"></i>
+        </div>
+        
+        <h2 class="text-2xl font-black text-slate-900 mb-1">تم تسجيل وحفظ الاستمارة بنجاح</h2>
+        <p class="text-xs sm:text-sm text-slate-600 max-w-md mx-auto mb-6">
+          تم قيد بيانات الطالب في سجل دروس التقوية بمدرسة عمر بن الخطاب الابتدائية للبنين وسيتم التنسيق معكم بمواعيد المجموعات.
+        </p>
+
+        <!-- Receipt Box (Maroon & White) -->
+        <div class="bg-[#fafafa] border border-slate-200 rounded-2xl p-6 text-right max-w-lg mx-auto text-sm space-y-3.5">
+          <div class="flex justify-between items-center border-b border-slate-200 pb-3">
+            <span class="text-slate-500 font-bold">رقم مرجع التسجيل:</span>
+            <span id="recCode" class="font-mono font-black text-[#8A1538] bg-[#fdf2f4] px-2.5 py-0.5 rounded-md border border-[#f1b8c4]">OBK-2026-0000</span>
+          </div>
+
+          <div class="flex justify-between items-center">
+            <span class="text-slate-500 font-medium">اسم الطالب:</span>
+            <span id="recName" class="font-bold text-slate-900">-</span>
+          </div>
+
+          <div class="flex justify-between items-center">
+            <span class="text-slate-500 font-medium">الرقم الشخصي (QID):</span>
+            <span id="recQid" class="font-mono font-bold text-slate-800">-</span>
+          </div>
+
+          <div class="flex justify-between items-center">
+            <span class="text-slate-500 font-medium">الصف والشعبة:</span>
+            <span id="recGradeSection" class="font-bold text-slate-900">-</span>
+          </div>
+
+          <div class="flex justify-between items-center">
+            <span class="text-slate-500 font-medium">ولي الأمر والهاتف:</span>
+            <span id="recGuardian" class="font-bold text-slate-800">-</span>
+          </div>
+
+          <div class="border-t border-slate-200 pt-3">
+            <span class="text-slate-500 block mb-2 font-bold">المواد الثلاث المعتمدة:</span>
+            <div id="recSubjectsList" class="flex flex-wrap gap-1.5"></div>
+          </div>
+
+          <div class="flex justify-between items-center border-t border-slate-200 pt-3 text-xs text-slate-500">
+            <span>تاريخ وتوقيت التقديم:</span>
+            <span id="recTimestamp" class="font-mono font-bold"></span>
+          </div>
+        </div>
+
+        <div class="flex flex-wrap items-center justify-center gap-3 mt-8 no-print">
+          <button 
+            onclick="window.print()" 
+            class="px-6 py-2.5 bg-[#8A1538] hover:bg-[#6a0f2b] text-white rounded-xl font-bold text-sm flex items-center gap-2 shadow-md transition"
+          >
+            <i class="fa-solid fa-print"></i>
+            <span>طباعة الإشعار</span>
+          </button>
+
+          <button 
+            onclick="submitNewForm()" 
+            class="px-6 py-2.5 bg-white border border-slate-300 hover:bg-slate-50 text-slate-800 rounded-xl font-bold text-sm flex items-center gap-2 transition"
+          >
+            <i class="fa-solid fa-user-plus text-[#8A1538]"></i>
+            <span>تسجيل طالب آخر</span>
+          </button>
+        </div>
+
+      </div>
+    </div>
+
+  </main>
+
+  <footer class="mt-12 text-center text-xs text-slate-500 no-print py-4">
+    <div class="flex items-center justify-center gap-2">
+      <i class="fa-solid fa-shield-halved text-[#8A1538]"></i>
+      <span>بوابة إلكترونية رسمية - مدرسة عمر بن الخطاب الابتدائية للبنين</span>
+      <span>•</span>
+      <button onclick="openAdminAccessModal()" class="hover:text-slate-800 underline font-bold">بوابة الإدارة المدرسية</button>
+    </div>
+  </footer>
+
+  <!-- Admin Login Modal (Completely Protected: NO password shown on UI) -->
+  <div id="adminAuthModal" class="hidden fixed inset-0 z-50 bg-slate-950/70 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-sm w-full p-6 text-center shadow-2xl border border-slate-200">
+      <div class="w-14 h-14 rounded-2xl bg-[#fdf2f4] text-[#8A1538] border border-[#f1b8c4] flex items-center justify-center text-2xl mx-auto mb-4 shadow-sm">
+        <i class="fa-solid fa-user-shield"></i>
+      </div>
+      <h3 class="text-lg font-black text-slate-900 mb-1">دخول المشرف المعتمد</h3>
+      <p class="text-xs text-slate-500 mb-5 leading-relaxed">
+        لوحة الإدارة مخصصة للهيئة الإدارية بمدرسة عمر بن الخطاب ومحمية برمز أمان سري.
+      </p>
+
+      <form onsubmit="handleAdminLogin(event)" class="space-y-4">
+        <div>
+          <input 
+            type="password" 
+            id="adminPinInput" 
+            placeholder="أدخل رمز المرور السري" 
+            class="w-full text-center tracking-widest font-mono text-lg px-4 py-2.5 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-[#8A1538] focus:border-[#8A1538] transition"
+            required
+            autocomplete="current-password"
+          >
+          <span id="pinErrorMsg" class="text-xs text-rose-600 hidden mt-1.5 font-bold block">رمز المرور غير صحيح! يرجى المحاولة مجدداً</span>
+        </div>
+
+        <div class="flex gap-2">
+          <button 
+            type="button" 
+            onclick="closeAdminAccessModal()" 
+            class="flex-1 py-2.5 rounded-xl border border-slate-200 text-slate-600 text-xs font-bold hover:bg-slate-50 transition"
+          >
+            إلغاء
+          </button>
+          <button 
+            type="submit" 
+            class="flex-1 py-2.5 rounded-xl bg-[#8A1538] hover:bg-[#6a0f2b] text-white text-xs font-bold shadow-md shadow-[#8A1538]/20 transition flex items-center justify-center gap-1.5"
+          >
+            <i class="fa-solid fa-unlock"></i>
+            <span>تسجيل الدخول</span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Private Admin Dashboard Modal (Protected) -->
+  <div id="adminDashboardModal" class="hidden fixed inset-0 z-50 bg-slate-900/70 backdrop-blur-sm flex items-center justify-center p-3 sm:p-5">
+    <div class="bg-white rounded-2xl max-w-5xl w-full max-h-[92vh] flex flex-col shadow-2xl border border-slate-200">
+      
+      <!-- Modal Header -->
+      <div class="p-4 sm:p-5 border-b border-slate-200 flex items-center justify-between bg-white rounded-t-2xl">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-xl bg-[#8A1538] text-white flex items-center justify-center text-lg shadow-sm">
+            <i class="fa-solid fa-chart-line"></i>
+          </div>
+          <div>
+            <div class="flex items-center gap-2">
+              <h3 class="font-black text-slate-900 text-base">لوحة المشرف الأكاديمي المعتمدة</h3>
+              <span class="px-2 py-0.5 bg-[#fdf2f4] text-[#8A1538] border border-[#f1b8c4] text-[10px] font-extrabold rounded-md">خاصة بالإدارة</span>
+            </div>
+            <p class="text-xs text-slate-500">سجل طلبات دروس التقوية - مدرسة عمر بن الخطاب الابتدائية للبنين</p>
+          </div>
+        </div>
+        
+        <div class="flex items-center gap-2">
+          <button onclick="adminLogout()" class="px-3 py-1.5 rounded-lg border border-slate-200 text-slate-700 hover:bg-slate-100 text-xs font-bold flex items-center gap-1 transition" title="قفل اللوحة">
+            <i class="fa-solid fa-lock text-[#8A1538]"></i>
+            <span class="hidden sm:inline">قفل اللوحة</span>
+          </button>
+          <button onclick="closeAdminDashboard()" class="w-8 h-8 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-600 flex items-center justify-center">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Registration Lock & Status Toggle Panel -->
+      <div class="bg-[#fdf2f4] border-b border-[#f1b8c4] p-3 sm:px-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs">
+        <div class="flex items-center gap-2">
+          <span class="font-bold text-slate-800">حالة بوابة التسجيل:</span>
+          <span id="adminStatusBadge" class="px-2.5 py-1 rounded-md font-bold text-white bg-emerald-700">مفتوحة لاستقبال الطلبات</span>
+        </div>
+        <div class="flex items-center gap-2">
+          <button 
+            id="toggleRegBtn"
+            onclick="toggleRegistrationStatus()" 
+            class="px-3 py-1.5 rounded-lg bg-white border border-[#8A1538] text-[#8A1538] hover:bg-[#8A1538] hover:text-white font-bold transition flex items-center gap-1.5 shadow-sm"
+          >
+            <i class="fa-solid fa-toggle-on text-sm"></i>
+            <span id="toggleRegBtnText">قفل باب التسجيل</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Quick Metrics Bar -->
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 p-4 bg-slate-50 border-b border-slate-200 text-xs">
+        <div class="bg-white p-3 rounded-xl border border-slate-200 shadow-sm">
+          <span class="text-slate-500 block font-bold">إجمالي المسجلين</span>
+          <span id="metricTotal" class="text-lg font-black text-[#8A1538]">0</span>
+        </div>
+        <div class="bg-white p-3 rounded-xl border border-slate-200 shadow-sm">
+          <span class="text-slate-500 block font-bold">الفترة الصباحية</span>
+          <span id="metricMorning" class="text-lg font-black text-amber-700">0</span>
+        </div>
+        <div class="bg-white p-3 rounded-xl border border-slate-200 shadow-sm">
+          <span class="text-slate-500 block font-bold">بعد الدوام المدرسي</span>
+          <span id="metricAfternoon" class="text-lg font-black text-slate-800">0</span>
+        </div>
+        <div class="bg-white p-3 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-center">
+          <span class="text-slate-500 block font-bold">حفظ سحابي</span>
+          <span class="text-emerald-700 font-bold flex items-center gap-1">
+            <span class="w-2 h-2 rounded-full bg-emerald-600 animate-ping"></span> متصل بالسجل
+          </span>
+        </div>
+      </div>
+
+      <!-- Table Body & Filter Controls -->
+      <div class="p-4 sm:p-5 overflow-y-auto flex-1 space-y-4">
+        
+        <!-- Controls Bar -->
+        <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
+          <div class="flex flex-wrap items-center gap-2 flex-1">
+            <div class="relative flex-1 min-w-[200px]">
+              <i class="fa-solid fa-magnifying-glass absolute right-3 top-2.5 text-slate-400 text-xs"></i>
+              <input 
+                type="text" 
+                id="adminSearchInput" 
+                oninput="renderAdminTable()" 
+                placeholder="بحث باسم الطالب أو الرقم الشخصي..." 
+                class="w-full pr-8 pl-3 py-1.5 text-xs rounded-lg border border-slate-300 focus:outline-none focus:ring-1 focus:ring-[#8A1538]"
+              >
+            </div>
+            
+            <select 
+              id="adminGradeFilter" 
+              onchange="renderAdminTable()" 
+              class="py-1.5 px-3 text-xs rounded-lg border border-slate-300 focus:outline-none focus:ring-1 focus:ring-[#8A1538] bg-white font-medium"
+            >
+              <option value="ALL">جميع الصفوف الدراسية</option>
+              <option value="الصف الأول الابتدائي">الأول الابتدائي</option>
+              <option value="الصف الثاني الابتدائي">الثاني الابتدائي</option>
+              <option value="الصف الثالث الابتدائي">الثالث الابتدائي</option>
+              <option value="الصف الرابع الابتدائي">الرابع الابتدائي</option>
+              <option value="الصف الخامس الابتدائي">الخامس الابتدائي</option>
+              <option value="الصف السادس الابتدائي">السادس الابتدائي</option>
+            </select>
+          </div>
+
+          <div class="flex items-center gap-2">
+            <button 
+              onclick="exportToCSV()" 
+              class="px-3.5 py-1.5 bg-emerald-700 hover:bg-emerald-800 text-white rounded-lg text-xs font-bold flex items-center gap-1.5 transition shadow-sm"
+            >
+              <i class="fa-solid fa-file-excel"></i>
+              <span>تصدير Excel (CSV)</span>
+            </button>
+            <button 
+              onclick="promptChangePin()" 
+              class="px-3 py-1.5 bg-white hover:bg-slate-100 text-slate-700 border border-slate-300 rounded-lg text-xs font-bold transition flex items-center gap-1"
+              title="تغيير رمز المرور"
+            >
+              <i class="fa-solid fa-key text-[#8A1538]"></i>
+              <span class="hidden sm:inline">تغيير الرمز</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Table of Registrations -->
+        <div class="overflow-x-auto border border-slate-200 rounded-xl bg-white shadow-sm">
+          <table class="w-full text-right text-xs">
+            <thead class="bg-slate-50 text-slate-800 font-black border-b border-slate-200">
+              <tr>
+                <th class="p-3">رقم الطلب</th>
+                <th class="p-3">اسم الطالب</th>
+                <th class="p-3">الرقم الشخصي</th>
+                <th class="p-3">الصف والشعبة</th>
+                <th class="p-3">المواد الثلاث المعتمدة</th>
+                <th class="p-3">ولي الأمر والتواصل</th>
+                <th class="p-3">الفترة</th>
+                <th class="p-3 text-center">إجراء</th>
+              </tr>
+            </thead>
+            <tbody id="adminTableBody" class="divide-y divide-slate-100 text-slate-700">
+              <!-- Dynamically populated rows -->
+            </tbody>
+          </table>
+        </div>
+        
+        <div id="adminEmptyMsg" class="hidden py-10 text-center text-slate-400 text-xs">
+          لا توجد استمارات مطابقة للبحث حالياً.
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Custom Confirmation Modal Box -->
+  <div id="confirmModal" class="hidden fixed inset-0 z-[60] bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-sm w-full p-6 text-center shadow-2xl border border-slate-200">
+      <div class="w-12 h-12 rounded-xl bg-rose-50 text-rose-600 flex items-center justify-center text-xl mx-auto mb-3">
+        <i class="fa-solid fa-triangle-exclamation"></i>
+      </div>
+      <h4 class="font-black text-slate-900 text-base mb-1" id="confirmTitle">تأكيد الإجراء</h4>
+      <p class="text-xs text-slate-500 mb-5 leading-relaxed" id="confirmMessage">هل أنت متأكد من المتابعة؟</p>
+      
+      <div class="flex gap-2">
+        <button 
+          id="confirmCancelBtn" 
+          class="flex-1 py-2 rounded-xl border border-slate-200 text-slate-600 text-xs font-bold hover:bg-slate-50 transition"
+        >
+          إلغاء
+        </button>
+        <button 
+          id="confirmOkBtn" 
+          class="flex-1 py-2 rounded-xl bg-[#8A1538] hover:bg-[#6a0f2b] text-white text-xs font-bold transition"
+        >
+          تأكيد
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+    import { getAuth, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+    import { getFirestore, collection, addDoc, onSnapshot, deleteDoc, doc, setDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+    const appId = typeof __app_id !== 'undefined' ? __app_id : 'obk-tutoring-qatar';
+    
+    const firebaseConfig = typeof __firebase_config !== 'undefined' 
+      ? JSON.parse(__firebase_config) 
+      : {
+          apiKey: "AIzaSyDummyKeyForFallbackOnly",
+          authDomain: "obk-tutoring.firebaseapp.com",
+          projectId: "obk-tutoring",
+          storageBucket: "obk-tutoring.appspot.com",
+          messagingSenderId: "1234567890",
+          appId: "1:1234567890:web:abcdef123456"
+        };
+
+    let app, auth, db;
+    let currentUser = null;
+    let cloudRegistrations = [];
+    let isCloudConnected = false;
+
+    async function initializeCloud() {
+      // 1. إعادة ضبط الحالة لتبدأ دائماً مفتوحة وتجاوز أي قفل قديم في المتصفح
+      localStorage.removeItem('OBK_REG_OPEN_STATE'); // حذف القيمة القديمة العالقة
+      const cachedStateV2 = localStorage.getItem('OBK_REG_STATE_V2');
+      if (cachedStateV2 !== null) {
+        window.isRegistrationOpen = (cachedStateV2 === 'open');
+      } else {
+        window.isRegistrationOpen = true; // الافتراضي دائماً مفتوح
+        localStorage.setItem('OBK_REG_STATE_V2', 'open');
+      }
+
+      if (typeof window.applyRegistrationLockState === 'function') {
+        window.applyRegistrationLockState();
+      }
+
+      try {
+        app = initializeApp(firebaseConfig);
+        auth = getAuth(app);
+        db = getFirestore(app);
+
+        if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+          await signInWithCustomToken(auth, __initial_auth_token);
+        } else {
+          await signInAnonymously(auth);
+        }
+        
+        currentUser = auth.currentUser;
+        isCloudConnected = true;
+
+        // 2. مراقبة حالة فتح/قفل التسجيل سحابياً وتحديثها فوراً على جميع الأجهزة
+        const settingsDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'settings', 'registration_config');
+        onSnapshot(settingsDocRef, (docSnap) => {
+          if (docSnap.exists()) {
+            const data = docSnap.data();
+            if (typeof data.isOpen === 'boolean') {
+              window.isRegistrationOpen = data.isOpen;
+              localStorage.setItem('OBK_REG_STATE_V2', window.isRegistrationOpen ? 'open' : 'closed');
+              if (typeof window.applyRegistrationLockState === 'function') {
+                window.applyRegistrationLockState();
+              }
+            }
+          }
+        }, (err) => {
+          console.warn("Settings snapshot notice:", err);
+        });
+
+        // 3. مراقبة قائمة الطلبات المسجلة
+        const regCollectionRef = collection(db, 'artifacts', appId, 'public', 'data', 'registrations');
+        onSnapshot(regCollectionRef, (snapshot) => {
+          const list = [];
+          snapshot.forEach((docSnapshot) => {
+            list.push({
+              _docId: docSnapshot.id,
+              ...docSnapshot.data()
+            });
+          });
+          
+          list.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+          cloudRegistrations = list;
+          window.cloudRegistrationsList = cloudRegistrations;
+          
+          if (window.isAdminLoggedIn) {
+            renderAdminTable();
+          }
+        }, (error) => {
+          console.warn("Registrations fallback mode:", error);
+          loadLocalFallback();
+        });
+
+      } catch (err) {
+        console.warn("Storage local mode:", err);
+        loadLocalFallback();
+      }
+    }
+
+    function loadLocalFallback() {
+      try {
+        const cached = localStorage.getItem('OBK_FALLBACK_CACHE');
+        cloudRegistrations = cached ? JSON.parse(cached) : [];
+        window.cloudRegistrationsList = cloudRegistrations;
+      } catch (e) {
+        cloudRegistrations = [];
+        window.cloudRegistrationsList = cloudRegistrations;
+      }
+    }
+
+    window.saveRegistrationToCloud = async function(data) {
+      if (isCloudConnected && db) {
+        try {
+          const regCollectionRef = collection(db, 'artifacts', appId, 'public', 'data', 'registrations');
+          await addDoc(regCollectionRef, {
+            ...data,
+            createdAt: Date.now()
+          });
+          return true;
+        } catch (e) {
+          console.error("Save error:", e);
+        }
+      }
+      
+      cloudRegistrations.unshift({
+        _docId: 'local_' + Date.now(),
+        ...data,
+        createdAt: Date.now()
+      });
+      try {
+        localStorage.setItem('OBK_FALLBACK_CACHE', JSON.stringify(cloudRegistrations));
+      } catch (e) {}
+      window.cloudRegistrationsList = cloudRegistrations;
+      return true;
+    };
+
+    window.saveRegistrationLockToCloud = async function(isOpen) {
+      localStorage.setItem('OBK_REG_STATE_V2', isOpen ? 'open' : 'closed');
+      if (isCloudConnected && db) {
+        try {
+          const settingsDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'settings', 'registration_config');
+          await setDoc(settingsDocRef, {
+            isOpen: isOpen,
+            lastUpdated: Date.now()
+          }, { merge: true });
+        } catch (e) {
+          console.error("Lock setting error:", e);
+        }
+      }
+    };
+
+    window.deleteRegistrationFromCloud = async function(docId) {
+      if (isCloudConnected && db && !docId.startsWith('local_')) {
+        try {
+          const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'registrations', docId);
+          await deleteDoc(docRef);
+          return true;
+        } catch (e) {
+          console.error("Delete error:", e);
+        }
+      }
+      
+      cloudRegistrations = cloudRegistrations.filter(item => item._docId !== docId);
+      try {
+        localStorage.setItem('OBK_FALLBACK_CACHE', JSON.stringify(cloudRegistrations));
+      } catch (e) {}
+      window.cloudRegistrationsList = cloudRegistrations;
+      renderAdminTable();
+      return true;
+    };
+
+    initializeCloud();
+  </script>
+
+  <script>
+    // State Variables
+    let selectedSubjects = [];
+    const MAX_SUBJECTS = 3;
+    let currentStep = 1;
+    const TOTAL_STEPS = 4;
+    window.isAdminLoggedIn = false;
+    window.cloudRegistrationsList = [];
+
+    // تنظيف القيمة القديمة وضمان فتح الاستمارة افتراضياً
+    localStorage.removeItem('OBK_REG_OPEN_STATE');
+    const cachedStateV2 = localStorage.getItem('OBK_REG_STATE_V2');
+    window.isRegistrationOpen = (cachedStateV2 !== null) ? (cachedStateV2 === 'open') : true;
+
+    // Secure Admin PIN
+    let currentAdminPin = '2026';
+
+    const stepTitles = {
+      1: "بيانات الطالب الأساسية",
+      2: "بيانات التواصل مع ولي الأمر",
+      3: "اختيار المواد الدراسية (3 مواد فقط)",
+      4: "الفترة المفضلة والتعهد والإرسال"
+    };
+
+    window.applyRegistrationLockState = function() {
+      const formEl = document.getElementById('formContainer');
+      const closedCard = document.getElementById('closedRegistrationCard');
+      const statusBadge = document.getElementById('adminStatusBadge');
+      const toggleBtnText = document.getElementById('toggleRegBtnText');
+      const receiptSection = document.getElementById('receiptSection');
+
+      if (!window.isRegistrationOpen) {
+        // إذا كان مقفلاً
+        formEl.classList.add('hidden');
+        if (receiptSection && receiptSection.classList.contains('hidden')) {
+          closedCard.classList.remove('hidden');
+        }
+        if (statusBadge) {
+          statusBadge.textContent = "مغلقة مؤقتاً";
+          statusBadge.className = "px-2.5 py-1 rounded-md font-bold text-white bg-rose-700";
+        }
+        if (toggleBtnText) {
+          toggleBtnText.textContent = "فتح باب التسجيل";
+        }
+      } else {
+        // إذا كان مفتوحاً
+        if (receiptSection && receiptSection.classList.contains('hidden')) {
+          formEl.classList.remove('hidden');
+        }
+        closedCard.classList.add('hidden');
+        if (statusBadge) {
+          statusBadge.textContent = "مفتوحة لاستقبال الطلبات";
+          statusBadge.className = "px-2.5 py-1 rounded-md font-bold text-white bg-emerald-700";
+        }
+        if (toggleBtnText) {
+          toggleBtnText.textContent = "قفل باب التسجيل";
+        }
+      }
+    };
+
+    window.toggleRegistrationStatus = async function() {
+      window.isRegistrationOpen = !window.isRegistrationOpen;
+      window.applyRegistrationLockState();
+      
+      // حفظ الحالة في السحابة والتخزين الدائم لتبقى ثابتة حتى بعد تحديث الصفحة
+      if (typeof window.saveRegistrationLockToCloud === 'function') {
+        await window.saveRegistrationLockToCloud(window.isRegistrationOpen);
+      }
+      
+      showToast(window.isRegistrationOpen ? "تم فتح باب التسجيل وحفظ الحالة بنجاح" : "تم إغلاق باب التسجيل وحفظ الحالة بنجاح", "info");
+    };
+
+    function updateStepUI() {
+      for (let i = 1; i <= TOTAL_STEPS; i++) {
+        const stepEl = document.getElementById(`step-${i}`);
+        const bulletEl = document.getElementById(`bullet-${i}`);
+        
+        if (i === currentStep) {
+          stepEl.classList.add('active');
+          bulletEl.className = "step-bullet w-8 h-8 rounded-full border-2 border-[#8A1538] bg-[#8A1538] text-white font-bold flex items-center justify-center transition-all current text-xs";
+        } else if (i < currentStep) {
+          stepEl.classList.remove('active');
+          bulletEl.className = "step-bullet w-8 h-8 rounded-full border-2 border-[#8A1538] bg-[#8A1538] text-white font-bold flex items-center justify-center transition-all completed text-xs";
+          bulletEl.innerHTML = `<i class="fa-solid fa-check text-xs"></i>`;
+        } else {
+          stepEl.classList.remove('active');
+          bulletEl.className = "step-bullet w-8 h-8 rounded-full border-2 border-slate-300 text-slate-500 font-bold flex items-center justify-center transition-all text-xs";
+          bulletEl.textContent = i;
+        }
+      }
+
+      document.getElementById('stepTitleDisplay').textContent = stepTitles[currentStep];
+      document.getElementById('stepCounterText').textContent = `الخطوة ${currentStep} من ${TOTAL_STEPS}`;
+      const progressPercent = (currentStep / TOTAL_STEPS) * 100;
+      document.getElementById('wizardProgressBar').style.width = `${progressPercent}%`;
+
+      const prevBtn = document.getElementById('prevBtn');
+      const nextBtn = document.getElementById('nextBtn');
+      const submitBtn = document.getElementById('submitBtn');
+
+      if (currentStep === 1) {
+        prevBtn.classList.add('hidden');
+      } else {
+        prevBtn.classList.remove('hidden');
+      }
+
+      if (currentStep === TOTAL_STEPS) {
+        nextBtn.classList.add('hidden');
+        submitBtn.classList.remove('hidden');
+      } else {
+        nextBtn.classList.remove('hidden');
+        submitBtn.classList.add('hidden');
+      }
+
+      window.scrollTo({ top: 100, behavior: 'smooth' });
+    }
+
+    function validateStep(step) {
+      let isValid = true;
+
+      if (step === 1) {
+        const name = document.getElementById('studentName').value.trim();
+        const errName = document.getElementById('err_studentName');
+        if (name.length < 5 || !name.includes(' ')) {
+          errName.classList.remove('hidden');
+          isValid = false;
+        } else {
+          errName.classList.add('hidden');
+        }
+
+        const qid = document.getElementById('studentQid').value.trim();
+        const errQid = document.getElementById('err_studentQid');
+        if (!/^\d{11}$/.test(qid)) {
+          errQid.classList.remove('hidden');
+          isValid = false;
+        } else {
+          errQid.classList.add('hidden');
+        }
+
+        const grade = document.getElementById('studentGrade').value;
+        const errGrade = document.getElementById('err_studentGrade');
+        if (!grade) {
+          errGrade.classList.remove('hidden');
+          isValid = false;
+        } else {
+          errGrade.classList.add('hidden');
+        }
+
+        const section = document.getElementById('studentSection').value;
+        const errSec = document.getElementById('err_studentSection');
+        if (!section) {
+          errSec.classList.remove('hidden');
+          isValid = false;
+        } else {
+          errSec.classList.add('hidden');
+        }
+      }
+
+      if (step === 2) {
+        const guardian = document.getElementById('guardianName').value.trim();
+        const errGuard = document.getElementById('err_guardianName');
+        if (guardian.length < 3) {
+          errGuard.classList.remove('hidden');
+          isValid = false;
+        } else {
+          errGuard.classList.add('hidden');
+        }
+
+        const phone = document.getElementById('guardianPhone').value.trim();
+        const errPhone = document.getElementById('err_guardianPhone');
+        if (!/^\d{8,12}$/.test(phone)) {
+          errPhone.classList.remove('hidden');
+          isValid = false;
+        } else {
+          errPhone.classList.add('hidden');
+        }
+      }
+
+      if (step === 3) {
+        const alertBox = document.getElementById('subjectAlert');
+        const alertText = document.getElementById('subjectAlertText');
+        if (selectedSubjects.length !== 3) {
+          alertText.textContent = `المطلوب تحديد 3 مواد دراسية بالضبط. اخترت حالياً (${selectedSubjects.length}) مواد فقط.`;
+          alertBox.classList.remove('hidden');
+          isValid = false;
+        } else {
+          alertBox.classList.add('hidden');
+        }
+      }
+
+      if (step === 4) {
+        const pledge = document.getElementById('pledgeAgreement').checked;
+        const errPledge = document.getElementById('err_pledge');
+        if (!pledge) {
+          errPledge.classList.remove('hidden');
+          isValid = false;
+        } else {
+          errPledge.classList.add('hidden');
+        }
+      }
+
+      return isValid;
+    }
+
+    function nextStep() {
+      if (!validateStep(currentStep)) {
+        showToast("يرجى استيفاء الحقول المطلوبة بشكل صحيح قبل المتابعة", "error");
+        return;
+      }
+      if (currentStep < TOTAL_STEPS) {
+        currentStep++;
+        updateStepUI();
+      }
+    }
+
+    function prevStep() {
+      if (currentStep > 1) {
+        currentStep--;
+        updateStepUI();
+      }
+    }
+
+    function initializeSubjectSelection() {
+      const subjectCards = document.querySelectorAll('.subject-card');
+      
+      subjectCards.forEach(card => {
+        const checkbox = card.querySelector('input[type="checkbox"]');
+        const subjectName = card.getAttribute('data-subject');
+
+        card.addEventListener('click', function(e) {
+          if (e.target !== checkbox) {
+            checkbox.checked = !checkbox.checked;
+          }
+
+          if (checkbox.checked) {
+            if (selectedSubjects.length >= MAX_SUBJECTS) {
+              checkbox.checked = false;
+              showToast("الحد الأقصى هو 3 مواد فقط", "error");
+              triggerSubjectLimitAlert();
+              return;
+            }
+            selectedSubjects.push(subjectName);
+            card.classList.add('selected');
+          } else {
+            selectedSubjects = selectedSubjects.filter(sub => sub !== subjectName);
+            card.classList.remove('selected');
+          }
+
+          updateSubjectCounters();
+        });
+      });
+    }
+
+    function updateSubjectCounters() {
+      const count = selectedSubjects.length;
+      const countEl = document.getElementById('selectedCountText');
+      const badge = document.getElementById('subjectCounterBadge');
+      const alertBox = document.getElementById('subjectAlert');
+
+      countEl.textContent = count;
+
+      if (count === 3) {
+        badge.className = "inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-bold bg-[#8A1538] text-white border border-[#8A1538]";
+        alertBox.classList.add('hidden');
+      } else {
+        badge.className = "inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-bold bg-[#fdf2f4] text-[#8A1538] border border-[#f1b8c4]";
+      }
+
+      const cards = document.querySelectorAll('.subject-card');
+      cards.forEach(card => {
+        const isSelected = selectedSubjects.includes(card.getAttribute('data-subject'));
+        if (count >= MAX_SUBJECTS && !isSelected) {
+          card.classList.add('disabled');
+        } else {
+          card.classList.remove('disabled');
+        }
+      });
+    }
+
+    function triggerSubjectLimitAlert() {
+      const alertBox = document.getElementById('subjectAlert');
+      const alertText = document.getElementById('subjectAlertText');
+      alertText.textContent = "تم استيفاء العدد الأقصى (3 مواد). يمكنك إلغاء مادة سابقة إذا أردت اختيار مادة بديلة.";
+      alertBox.classList.remove('hidden');
+    }
+
+    async function handleFormSubmit() {
+      if (!validateStep(4)) {
+        showToast("يرجى الموافقة والتعهد قبل إرسال الطلب", "error");
+        return;
+      }
+
+      const submitBtn = document.getElementById('submitBtn');
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> <span>جاري حفظ الاستمارة سحابياً...</span>`;
+
+      const registrationId = 'OBK-' + new Date().getFullYear() + '-' + Math.floor(1000 + Math.random() * 9000);
+      const registrationData = {
+        id: registrationId,
+        timestamp: new Date().toLocaleString('ar-QA', { dateStyle: 'medium', timeStyle: 'short' }),
+        studentName: document.getElementById('studentName').value.trim(),
+        studentQid: document.getElementById('studentQid').value.trim(),
+        studentGrade: document.getElementById('studentGrade').value,
+        studentSection: document.getElementById('studentSection').value,
+        transportType: document.getElementById('transportType').value,
+        guardianName: document.getElementById('guardianName').value.trim(),
+        guardianRelation: document.getElementById('guardianRelation').value,
+        guardianPhone: document.getElementById('guardianPhone').value.trim(),
+        guardianPhone2: document.getElementById('guardianPhone2').value.trim() || 'لا يوجد',
+        subjects: [...selectedSubjects],
+        preferredTime: document.querySelector('input[name="preferredTime"]:checked').value,
+        studentNotes: document.getElementById('studentNotes').value.trim() || 'لا توجد ملاحظات'
+      };
+
+      if (typeof window.saveRegistrationToCloud === 'function') {
+        await window.saveRegistrationToCloud(registrationData);
+      }
+
+      // Display on Receipt
+      document.getElementById('recCode').textContent = registrationData.id;
+      document.getElementById('recName').textContent = registrationData.studentName;
+      document.getElementById('recQid').textContent = registrationData.studentQid;
+      document.getElementById('recGradeSection').textContent = `${registrationData.studentGrade} - شعبة (${registrationData.studentSection})`;
+      document.getElementById('recGuardian').textContent = `${registrationData.guardianName} (${registrationData.guardianPhone})`;
+      document.getElementById('recTimestamp').textContent = registrationData.timestamp;
+
+      const recSubContainer = document.getElementById('recSubjectsList');
+      recSubContainer.innerHTML = '';
+      registrationData.subjects.forEach(sub => {
+        const chip = document.createElement('span');
+        chip.className = "px-3 py-1 bg-[#fdf2f4] text-[#8A1538] rounded-lg font-bold text-xs border border-[#f1b8c4]";
+        chip.innerHTML = `<i class="fa-solid fa-check ml-1 text-[#8A1538]"></i> ${sub}`;
+        recSubContainer.appendChild(chip);
+      });
+
+      document.getElementById('formContainer').classList.add('hidden');
+      document.getElementById('receiptSection').classList.remove('hidden');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+
+      submitBtn.disabled = false;
+      submitBtn.innerHTML = `<i class="fa-solid fa-cloud-arrow-up"></i> <span>تأكيد وحفظ الاستمارة</span>`;
+      showToast("تم حفظ استمارة التسجيل بنجاح", "success");
+    }
+
+    function resetAllFields() {
+      document.getElementById('studentName').value = '';
+      document.getElementById('studentQid').value = '';
+      document.getElementById('studentGrade').selectedIndex = 0;
+      document.getElementById('studentSection').selectedIndex = 0;
+      document.getElementById('guardianName').value = '';
+      document.getElementById('guardianPhone').value = '';
+      document.getElementById('guardianPhone2').value = '';
+      document.getElementById('studentNotes').value = '';
+      document.getElementById('pledgeAgreement').checked = false;
+
+      selectedSubjects = [];
+      const checkboxes = document.querySelectorAll('input[name="subjects"]');
+      checkboxes.forEach(cb => cb.checked = false);
+      const cards = document.querySelectorAll('.subject-card');
+      cards.forEach(card => card.classList.remove('selected', 'disabled'));
+
+      document.querySelectorAll('[id^="err_"]').forEach(el => el.classList.add('hidden'));
+      document.getElementById('subjectAlert').classList.add('hidden');
+
+      currentStep = 1;
+      updateSubjectCounters();
+      updateStepUI();
+      showToast("تمت إعادة ضبط الحقول", "info");
+    }
+
+    function submitNewForm() {
+      resetAllFields();
+      document.getElementById('receiptSection').classList.add('hidden');
+      window.applyRegistrationLockState();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function openAdminAccessModal() {
+      if (window.isAdminLoggedIn) {
+        openAdminDashboard();
+        return;
+      }
+      document.getElementById('adminPinInput').value = '';
+      document.getElementById('pinErrorMsg').classList.add('hidden');
+      document.getElementById('adminAuthModal').classList.remove('hidden');
+      setTimeout(() => document.getElementById('adminPinInput').focus(), 100);
+    }
+
+    function closeAdminAccessModal() {
+      document.getElementById('adminAuthModal').classList.add('hidden');
+    }
+
+    function handleAdminLogin(e) {
+      e.preventDefault();
+      const enteredPin = document.getElementById('adminPinInput').value.trim();
+      const pinError = document.getElementById('pinErrorMsg');
+
+      if (enteredPin === currentAdminPin) {
+        window.isAdminLoggedIn = true;
+        closeAdminAccessModal();
+        openAdminDashboard();
+        showToast("مرحباً بك في لوحة الإدارة المدرسية", "success");
+      } else {
+        pinError.classList.remove('hidden');
+        document.getElementById('adminPinInput').value = '';
+        document.getElementById('adminPinInput').focus();
+      }
+    }
+
+    function openAdminDashboard() {
+      document.getElementById('adminDashboardModal').classList.remove('hidden');
+      window.applyRegistrationLockState();
+      renderAdminTable();
+    }
+
+    function closeAdminDashboard() {
+      document.getElementById('adminDashboardModal').classList.add('hidden');
+    }
+
+    function adminLogout() {
+      window.isAdminLoggedIn = false;
+      closeAdminDashboard();
+      showToast("تم قفل لوحة التحكم المدرسية", "info");
+    }
+
+    function promptChangePin() {
+      showCustomConfirm("تغيير رمز المرور السري", "هل ترغب في تغيير الرمز السري للوحة الإدارة؟", () => {
+        const newPin = window.prompt("أدخل رمز المرور السري الجديد:");
+        if (newPin && newPin.trim().length >= 3) {
+          currentAdminPin = newPin.trim();
+          showToast("تم تغيير رمز المرور بنجاح", "success");
+        } else if (newPin !== null) {
+          showToast("يجب ألا يقل الرمز عن 3 أحرف أو أرقام", "error");
+        }
+      });
+    }
+
+    function renderAdminTable() {
+      const list = window.cloudRegistrationsList || [];
+      const tbody = document.getElementById('adminTableBody');
+      const emptyMsg = document.getElementById('adminEmptyMsg');
+      const searchTerm = (document.getElementById('adminSearchInput').value || '').trim().toLowerCase();
+      const gradeFilter = document.getElementById('adminGradeFilter').value;
+
+      document.getElementById('metricTotal').textContent = list.length;
+      const morningCount = list.filter(item => (item.preferredTime || '').includes('الصباحية')).length;
+      document.getElementById('metricMorning').textContent = morningCount;
+      document.getElementById('metricAfternoon').textContent = list.length - morningCount;
+
+      const filtered = list.filter(item => {
+        const matchesGrade = gradeFilter === 'ALL' || item.studentGrade === gradeFilter;
+        const matchesSearch = !searchTerm || 
+          (item.studentName && item.studentName.toLowerCase().includes(searchTerm)) ||
+          (item.studentQid && item.studentQid.includes(searchTerm)) ||
+          (item.id && item.id.toLowerCase().includes(searchTerm));
+        return matchesGrade && matchesSearch;
+      });
+
+      tbody.innerHTML = '';
+      if (filtered.length === 0) {
+        emptyMsg.classList.remove('hidden');
+        return;
+      }
+      emptyMsg.classList.add('hidden');
+
+      filtered.forEach(item => {
+        const tr = document.createElement('tr');
+        tr.className = "hover:bg-slate-50 transition";
+        tr.innerHTML = `
+          <td class="p-3 font-mono font-bold text-[#8A1538]">${item.id}</td>
+          <td class="p-3 font-bold text-slate-900">${item.studentName}</td>
+          <td class="p-3 font-mono text-slate-700">${item.studentQid}</td>
+          <td class="p-3 text-slate-700">${item.studentGrade} <span class="text-[#8A1538] font-bold">(${item.studentSection})</span></td>
+          <td class="p-3">
+            <div class="flex flex-wrap gap-1">
+              ${(item.subjects || []).map(s => `<span class="bg-[#fdf2f4] text-[#8A1538] px-1.5 py-0.5 rounded text-[10px] font-bold border border-[#f1b8c4]">${s}</span>`).join('')}
+            </div>
+          </td>
+          <td class="p-3 text-slate-700 font-mono text-[11px]">
+            <div class="font-bold">${item.guardianName}</div>
+            <a href="tel:${item.guardianPhone}" class="text-[#8A1538] hover:underline font-bold">${item.guardianPhone}</a>
+          </td>
+          <td class="p-3 text-slate-600 text-[11px] whitespace-nowrap">
+            ${(item.preferredTime || '').includes('الصباحية') ? '<span class="text-amber-700 font-bold">صباحي</span>' : '<span class="text-slate-800 font-bold">بعد الدوام</span>'}
+          </td>
+          <td class="p-3 text-center whitespace-nowrap">
+            <button 
+              onclick="confirmDeleteRecord('${item._docId}')" 
+              class="w-7 h-7 rounded-lg bg-rose-50 hover:bg-rose-100 text-rose-600 inline-flex items-center justify-center transition"
+              title="حذف هذا السجل"
+            >
+              <i class="fa-regular fa-trash-can text-xs"></i>
+            </button>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    function confirmDeleteRecord(docId) {
+      showCustomConfirm("حذف استمارة الطالب", "هل أنت متأكد من حذف هذا السجل نهائياً من قاعدة البيانات المدرسية؟", async () => {
+        if (typeof window.deleteRegistrationFromCloud === 'function') {
+          await window.deleteRegistrationFromCloud(docId);
+          showToast("تم حذف السجل بنجاح", "info");
+        }
+      });
+    }
+
+    function exportToCSV() {
+      const list = window.cloudRegistrationsList || [];
+      if (list.length === 0) {
+        showToast("لا توجد استمارات مسجلة للتصدير حالياً", "error");
+        return;
+      }
+
+      let csvContent = "\uFEFF"; // UTF-8 BOM for Arabic excel compatibility
+      csvContent += "رقم الطلب,اسم الطالب,الرقم الشخصي,الصف الدراسي,الشعبة,المواد الثلاث,ولي الأمر,صلة القرابة,رقم الهاتف,الفترة المفضلة,وسيلة الانصراف,ملاحظات ولي الأمر,تاريخ التقديم\n";
+
+      list.forEach(item => {
+        const subjectsFormatted = `"${(item.subjects || []).join(' - ')}"`;
+        const notesFormatted = `"${(item.studentNotes || '').replace(/"/g, '""')}"`;
+        const row = [
+          item.id,
+          `"${item.studentName || ''}"`,
+          `'${item.studentQid || ''}'`,
+          `"${item.studentGrade || ''}"`,
+          item.studentSection || '',
+          subjectsFormatted,
+          `"${item.guardianName || ''}"`,
+          `"${item.guardianRelation || ''}"`,
+          `'${item.guardianPhone || ''}'`,
+          `"${item.preferredTime || ''}"`,
+          `"${item.transportType || ''}"`,
+          notesFormatted,
+          `"${item.timestamp || ''}"`
+        ];
+        csvContent += row.join(",") + "\n";
+      });
+
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.setAttribute("href", url);
+      link.setAttribute("download", `تسجيل_دروس_التقوية_مدرسة_عمر_بن_الخطاب_${new Date().toISOString().slice(0, 10)}.csv`);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      showToast("تم تصدير ملف الإكسل بنجاح", "success");
+    }
+
+    let onConfirmCallback = null;
+
+    function showCustomConfirm(title, message, callback) {
+      document.getElementById('confirmTitle').textContent = title;
+      document.getElementById('confirmMessage').textContent = message;
+      onConfirmCallback = callback;
+      document.getElementById('confirmModal').classList.remove('hidden');
+    }
+
+    document.getElementById('confirmCancelBtn').addEventListener('click', () => {
+      document.getElementById('confirmModal').classList.add('hidden');
+      onConfirmCallback = null;
+    });
+
+    document.getElementById('confirmOkBtn').addEventListener('click', () => {
+      document.getElementById('confirmModal').classList.add('hidden');
+      if (typeof onConfirmCallback === 'function') {
+        onConfirmCallback();
+      }
+      onConfirmCallback = null;
+    });
+
+    function showToast(message, type = 'info') {
+      const toast = document.getElementById('toastNotification');
+      let bgColor = 'bg-slate-900';
+      let icon = 'fa-circle-info';
+
+      if (type === 'success') {
+        bgColor = 'bg-[#8A1538]';
+        icon = 'fa-circle-check';
+      } else if (type === 'error') {
+        bgColor = 'bg-rose-700';
+        icon = 'fa-circle-exclamation';
+      }
+
+      toast.className = `fixed bottom-6 left-1/2 -translate-x-1/2 z-50 px-5 py-3 rounded-xl shadow-2xl text-white text-xs sm:text-sm font-bold flex items-center gap-2 transition-all ${bgColor}`;
+      toast.innerHTML = `<i class="fa-solid ${icon}"></i> <span>${message}</span>`;
+      toast.classList.remove('hidden');
+
+      setTimeout(() => {
+        toast.classList.add('hidden');
+      }, 3500);
+    }
+
+    // Startup
+    window.addEventListener('DOMContentLoaded', () => {
+      initializeSubjectSelection();
+      window.applyRegistrationLockState();
+      updateStepUI();
+    });
+  </script>
+</body>
+</html>
